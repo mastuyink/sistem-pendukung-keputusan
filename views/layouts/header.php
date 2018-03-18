@@ -63,7 +63,7 @@ use yii\helpers\Html;
                 <!-- User Account: style can be found in dropdown.less -->
                 <li>
                     <a href="#" data-toggle="control-sidebar"></a>
-                </li
+                </li>
             <?php endif; ?>
             </ul>
         </div>
