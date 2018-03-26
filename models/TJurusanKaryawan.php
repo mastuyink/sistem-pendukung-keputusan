@@ -63,4 +63,16 @@ class TJurusanKaryawan extends \yii\db\ActiveRecord
     {
         return $this->hasOne(TJurusan::className(), ['id' => 'id_jurusan']);
     }
+
+    public static function setJurusan($data){
+        if (($jurusan = self::findOne($data['id_karyawan'])) !== null) {
+            $jurusan->id_jurusan = $data['id_jurusan'];
+            $jurusan->save();
+        }else{
+            $jurusan = new TJurusanKaryawan();
+            $jurusan->id_karyawan = $data['id_karyawan'];
+            $jurusan->id_jurusan = $data['id_jurusan'];
+            $jurusan->save();
+        }
+    }
 }

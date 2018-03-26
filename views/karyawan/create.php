@@ -19,6 +19,7 @@ $this->params['breadcrumbs'][] = $this->title;
 		'listTempatLahir' => $listTempatLahir,
 		'listPendidikan' => $listPendidikan,
 		'listJurusan' => $listJurusan,
+		'listProvinsi' => $listProvinsi,
     ]) ?>
 
 </div>

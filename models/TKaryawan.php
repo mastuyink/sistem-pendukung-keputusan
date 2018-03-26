@@ -33,6 +33,9 @@ class TKaryawan extends \yii\db\ActiveRecord
     const LAKI_LAKI = 1;
     const PEREMPUAN = 2;
     public $jurusan;
+    public $id_provinsi;
+    public $id_kabupaten;
+    public $id_kecamatan;
     /**
      * @inheritdoc
      */
@@ -47,7 +50,7 @@ class TKaryawan extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['nip', 'nama', 'id_jk', 'id_tempat_lahir', 'tanggal_lahir', 'tanggal_kerja', 'id_bidang', 'id_jabatan', 'no_telp', 'alamat','id_pendidikan_akhir','tanggal_menjabat'], 'required'],
+            [['nip', 'nama', 'id_jk', 'id_tempat_lahir', 'tanggal_lahir', 'tanggal_kerja', 'id_bidang', 'id_jabatan', 'no_telp', 'alamat','id_pendidikan_akhir','tanggal_menjabat','id_kelurahan'], 'required'],
             [['tanggal_lahir','tanggal_kerja','tanggal_menjabat'],'date', 'format'=>'php:Y-m-d'],
             [['nip', 'id_jk', 'id_tempat_lahir', 'id_bidang', 'id_jabatan', 'id_user','jurusan'], 'integer'],
             [['tanggal_lahir', 'tanggal_kerja', 'create_at', 'update_at','tanggal_menjabat'], 'safe'],
@@ -62,6 +65,10 @@ class TKaryawan extends \yii\db\ActiveRecord
             [['id_bidang'], 'exist', 'skipOnError' => true, 'targetClass' => TBidang::className(), 'targetAttribute' => ['id_bidang' => 'id']],
             [['id_jabatan'], 'exist', 'skipOnError' => true, 'targetClass' => TJabatan::className(), 'targetAttribute' => ['id_jabatan' => 'id']],
             [['id_pendidikan_akhir'], 'exist', 'skipOnError' => true, 'targetClass' => TPendidikanAkhir::className(), 'targetAttribute' => ['id_pendidikan_akhir' => 'id']],
+            [['id_kelurahan'], 'exist', 'skipOnError' => true, 'targetClass' => TKelurahan::className(), 'targetAttribute' => ['id_kelurahan' => 'id']],
+            [['id_provinsi'], 'exist', 'skipOnError' => true, 'targetClass' => TProvinsi::className(), 'targetAttribute' => ['id_provinsi' => 'id']],
+            [['id_kabupaten'], 'exist', 'skipOnError' => true, 'targetClass' => TKabupaten::className(), 'targetAttribute' => ['id_kabupaten' => 'id']],
+            [['id_kecamatan'], 'exist', 'skipOnError' => true, 'targetClass' => TKecamatan::className(), 'targetAttribute' => ['id_kecamatan' => 'id']],
              ['id_pendidikan_akhir','validasiJurusan'],
         ];
     }
@@ -87,6 +94,10 @@ class TKaryawan extends \yii\db\ActiveRecord
             'jurusan'             => 'Jurusan',
             'alamat'              => 'Alamat',
             'id_user'             => 'User',
+            'id_provinsi'         => 'Provinsi',
+            'id_kabupaten'        => 'Kabupaten',
+            'id_kecamatan'        => 'Kecamatan',
+            'id_kelurahan'        => 'Kelurahan',
             'create_at'           => 'Create At',
             'update_at'           => 'Update At',
         ];
@@ -134,6 +145,11 @@ class TKaryawan extends \yii\db\ActiveRecord
         return $this->hasOne(TJurusanKaryawan::className(), ['id_karyawan' => 'id']);
     }
 
+    public function getIdKelurahan()
+    {
+        return $this->hasOne(TKelurahan::className(), ['id' => 'id_kelurahan']);
+    }
+
 
         public function jenisKelamin($jk)
     {
@@ -154,10 +170,11 @@ class TKaryawan extends \yii\db\ActiveRecord
     {
 
         if ($this->id_pendidikan_akhir > 3) {
-            $modelJurusanKaryawan = new TJurusanKaryawan();
-            $modelJurusanKaryawan->id_karyawan = $this->id;
-            $modelJurusanKaryawan->id_jurusan = $this->jurusan;
-            $modelJurusanKaryawan->save(false);
+            $data = [
+                'id_karyawan' => $this->id,
+                'id_jurusan' => $this->jurusan,
+            ];
+            TJurusanKaryawan::setJurusan($data);
         }
         return true;
     }

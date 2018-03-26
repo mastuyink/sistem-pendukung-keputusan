@@ -9,7 +9,7 @@ $this->title = 'Update Tkaryawan: ' . $model->nama;
 $this->params['breadcrumbs'][] = ['label' => 'Tkaryawans', 'url' => ['index']];
 $this->params['breadcrumbs'][] = 'Update';
 ?>
-<div class="tkaryawan-update
+<div class="tkaryawan-update">
 
     <?= $this->render('_form', [
 		'model'           => $model,
@@ -18,6 +18,10 @@ $this->params['breadcrumbs'][] = 'Update';
 		'listTempatLahir' => $listTempatLahir,
 		'listPendidikan'  => $listPendidikan,
 		'listJurusan'     => $listJurusan,
+		'listProvinsi'     => $listProvinsi,
+		'listKabupaten'     => $listKabupaten,
+		'listKecamatan'     => $listKecamatan,
+		'listKelurahan'     => $listKelurahan,
     ]) ?>
 
 </div>

@@ -97,6 +97,7 @@
                 'options' => ['class' => 'sidebar-menu tree', 'data-widget'=> 'tree'],
                 'items' => [
                     ['label' => 'Menu Kepala Dinas', 'options' => ['class' => 'header']],
+                    
                     ['label' => 'Data Penilaian', 'icon' => 'circle-o', 'url' => '/laporan/bulanan',],
                     ['label' => 'Kriteria', 'icon' => 'circle-o', 'url' => '/kriteria/index',],
                     

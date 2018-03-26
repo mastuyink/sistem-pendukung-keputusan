@@ -39,7 +39,7 @@ use yii\widgets\DetailView;
         </tr>
         <tr>
             <th>Alamat</th>
-            <td><?= $modelKaryawan->alamat ?></td>
+            <td><?= "<p>".$modelKaryawan->alamat."</p> <p> ".$modelKaryawan->idKelurahan->nama." - ".$modelKaryawan->idKelurahan->kecamatan->nama." </p><p> ".$modelKaryawan->idKelurahan->kecamatan->kabupaten->nama." - ".$modelKaryawan->idKelurahan->kecamatan->kabupaten->provinsi->nama."</p>" ?></td>
         </tr>
 
     </tbody>
