@@ -61,7 +61,7 @@ class TKaryawan extends \yii\db\ActiveRecord
            // [['nip'],'integer','max'=>20],
             [['nip'], 'unique'],
             [['id_user'], 'unique'],
-            [['id_tempat_lahir'], 'exist', 'skipOnError' => true, 'targetClass' => TTempatLahir::className(), 'targetAttribute' => ['id_tempat_lahir' => 'id']],
+            [['id_tempat_lahir'], 'exist', 'skipOnError' => true, 'targetClass' => TKabupaten::className(), 'targetAttribute' => ['id_tempat_lahir' => 'id']],
             [['id_bidang'], 'exist', 'skipOnError' => true, 'targetClass' => TBidang::className(), 'targetAttribute' => ['id_bidang' => 'id']],
             [['id_jabatan'], 'exist', 'skipOnError' => true, 'targetClass' => TJabatan::className(), 'targetAttribute' => ['id_jabatan' => 'id']],
             [['id_pendidikan_akhir'], 'exist', 'skipOnError' => true, 'targetClass' => TPendidikanAkhir::className(), 'targetAttribute' => ['id_pendidikan_akhir' => 'id']],
@@ -69,8 +69,13 @@ class TKaryawan extends \yii\db\ActiveRecord
             [['id_provinsi'], 'exist', 'skipOnError' => true, 'targetClass' => TProvinsi::className(), 'targetAttribute' => ['id_provinsi' => 'id']],
             [['id_kabupaten'], 'exist', 'skipOnError' => true, 'targetClass' => TKabupaten::className(), 'targetAttribute' => ['id_kabupaten' => 'id']],
             [['id_kecamatan'], 'exist', 'skipOnError' => true, 'targetClass' => TKecamatan::className(), 'targetAttribute' => ['id_kecamatan' => 'id']],
-             ['id_pendidikan_akhir','validasiJurusan'],
-        ];
+            //['id_pendidikan_akhir','validasiJurusan'],
+            ['jurusan', 'required', 'when' => function ($model) {
+            return $model->id_pendidikan_akhir > 3;
+            }, 'whenClient' => "function (attribute, value) {
+            return $('#form-jurusan-akhir').val() > 3;
+            }"]
+            ];
     }
 
     /**
@@ -108,7 +113,7 @@ class TKaryawan extends \yii\db\ActiveRecord
      */
     public function getIdTempatLahir()
     {
-        return $this->hasOne(TTempatLahir::className(), ['id' => 'id_tempat_lahir']);
+        return $this->hasOne(TKabupaten::className(), ['id' => 'id_tempat_lahir']);
     }
 
     /**

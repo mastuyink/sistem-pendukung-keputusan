@@ -23,7 +23,7 @@ use yii\widgets\DetailView;
         </tr>
         <tr>
             <th>TTL</th>
-            <td><?= $modelKaryawan->idTempatLahir->tempat_lahir.", ".date('d-M-Y',strtotime($modelKaryawan->tanggal_lahir)) ?></td>
+            <td><?= $modelKaryawan->idTempatLahir->nama.", ".date('d-M-Y',strtotime($modelKaryawan->tanggal_lahir)) ?></td>
         </tr>
         <tr>
             <th>Tanggal Kerja</th>
@@ -39,7 +39,7 @@ use yii\widgets\DetailView;
         </tr>
         <tr>
             <th>Alamat</th>
-            <td><?= "<p>".$modelKaryawan->alamat."</p> <p> ".$modelKaryawan->idKelurahan->nama." - ".$modelKaryawan->idKelurahan->kecamatan->nama." </p><p> ".$modelKaryawan->idKelurahan->kecamatan->kabupaten->nama." - ".$modelKaryawan->idKelurahan->kecamatan->kabupaten->provinsi->nama."</p>" ?></td>
+            <td><?= "<p>".$modelKaryawan->alamat."</p> <p> Desa ".$modelKaryawan->idKelurahan->nama.", Kecamatan ".$modelKaryawan->idKelurahan->kecamatan->nama." </p><p> Kabupaten ".$modelKaryawan->idKelurahan->kecamatan->kabupaten->nama.", Provinsi ".$modelKaryawan->idKelurahan->kecamatan->kabupaten->provinsi->nama."</p>" ?></td>
         </tr>
 
     </tbody>

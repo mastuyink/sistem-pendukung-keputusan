@@ -209,23 +209,6 @@ $(document).ready(function(){
   $('#picker-tanggal-menjabat').attr('placeholder','Tanggal Menjabat');
   $('#picker-tanggal-kerja').attr('placeholder','Tanggal Kerja');
   var idProvinsi = $('#dropdown-provinsi').val();
-  // if (idProvinsi != ''){
-  //   Kabupaten(idProvinsi);
-  //   // $('#dropdown-kabupaten').val(3526);
-  //   // var idKabupaten = $('#dropdown-kabupaten').val();
-  //   // alert(idKabupaten);
-  //   // if (idKabupaten != ''){
-  //   //   Kecamatan(idKabupaten);
-  //   //   var idKecamatan = $('#dropdown-kecamatan').val();
-
-  //   //   if (idKecamatan != ''){
-  //   //     Kelurahan(idKecamatan);
-  //   //   }
-  //   // }
-
-  // } else {
-  //   return false;
-  // }
 });
 
 $('#dropdown-kecamatan').on('change',function(){
@@ -290,6 +273,7 @@ $('#form-jurusan-akhir').on('change',function(){
 
 function jurusan(x){
   if (x > 3) {
+    $('.field-tkaryawan-jurusan').removeClass('has-success');
     $('#div-jurusan').css('visibility','visible');
   } else {
     $('#div-jurusan').css('visibility','hidden');

@@ -7,7 +7,6 @@ use app\models\TKaryawan;
 use app\models\TKaryawanSearch;
 use app\models\TBidang;
 use app\models\TJabatan;
-use app\models\TTempatLahir;
 use app\models\TPendidikanAkhir;
 use app\models\TJurusan;
 use app\models\TProvinsi;
@@ -128,7 +127,7 @@ class KaryawanController extends Controller
         } else {
             $listBidang      = ArrayHelper::map($this->getAllBidang(), 'id', 'bidang');
             $listJabatan     = ArrayHelper::map($this->getAllJabatan(), 'id', 'jabatan');
-            $listTempatLahir = ArrayHelper::map($this->getAllTempatLahir(), 'id', 'tempat_lahir');
+            $listTempatLahir = ArrayHelper::map(TKabupaten::ambilKabupaten(), 'id', 'nama');
             $listPendidikan  = ArrayHelper::map($this->getAllPendidikan(), 'id', 'pendidikan_akhir');
             $listJurusan     = ArrayHelper::map(TJurusan::find()->asArray()->all(), 'id', 'jurusan');
             $listProvinsi    = ArrayHelper::map(TProvinsi::ambilSemuaProvinsi(), 'id', 'nama');
@@ -149,9 +148,6 @@ class KaryawanController extends Controller
     }
     protected function getAllJabatan(){
         return TJabatan::find()->all();
-    }
-    protected function getAllTempatLahir(){
-        return TTempatLahir::find()->all();
     }
     protected function getAllPendidikan(){
         return TPendidikanAkhir::find()->orderBy(['id'=>SORT_ASC])->all();

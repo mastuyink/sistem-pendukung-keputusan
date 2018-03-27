@@ -54,7 +54,6 @@
                             ['label' => 'Karyawan', 'icon' => 'circle-o', 'url' => '/karyawan/index',],
                             ['label' => 'Jabatan', 'icon' => 'circle-o', 'url' => '/jabatan/index',],
                             ['label' => 'Bidang', 'icon' => 'circle-o', 'url' => '/bidang/index',],
-                            ['label' => 'Tempat Lahir', 'icon' => 'circle-o', 'url' => '/tempat-lahir/index',],
                             ['label' => 'Pendidikan Akhir', 'icon' => 'circle-o', 'url' => '/pendidikan-akhir/index',],
                             ['label' => 'Jurursan', 'icon' => 'circle-o', 'url' => '/jurusan/index',],
                             
