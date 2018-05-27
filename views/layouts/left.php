@@ -117,7 +117,6 @@
                         'url' => '#',
                         'items' => [
                             ['label' => 'Karyawan', 'icon' => 'circle-o', 'url' => '/karyawan/index',],
-                            ['label' => 'Tempat Lahir', 'icon' => 'circle-o', 'url' => '/tempat-lahir/index',],
                             
                         ],
                     ],

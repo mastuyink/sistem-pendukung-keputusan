@@ -122,7 +122,11 @@ $this->params['breadcrumbs'][] = $this->title;
                             $jabatan = 'Pilih Jabatan' ;
                         }
                         
+                        if (Yii::$app->user->identity->level > 1) {
+                            return $jabatan;
+                        }else{
                          return $jabatan.'<br>'.$tombolPilihJabatan;
+                        }
                     }
                 }
             ],
@@ -158,7 +162,13 @@ $this->params['breadcrumbs'][] = $this->title;
                         'id'          => 'btn-detail-karyawan'.$model->id,
                         'id-karyawan' => $model->id
                     ]);
-                    return $detail."".$edit."".$delete;
+
+                    if (Yii::$app->user->identity->level == 1) {
+                        return $detail."".$edit."".$delete;
+                    }else{
+                        return $detail;
+                    }
+                    
                 }
             ]
         ],

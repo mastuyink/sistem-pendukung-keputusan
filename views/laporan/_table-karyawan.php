@@ -14,21 +14,37 @@ use yii\helpers\Url;
                 <caption>Data Karyawan</caption>
                 <tbody>
                     <tr>
-                        <td width="100">NIP</td>
+                        <th width="100">NIP</th>
                         <td> : <?= $modelPenilaian[0]->idKaryawan->nip ?></td>
                     </tr>
                     <tr>
-                        <td width="100">Nama</td>
-                        <td> : <?= $modelPenilaian[0]->idKaryawan->nama ?></td>
+                        <th width="100">Nama</th>
+                        <td> : <?= $modelPenilaian[0]->idKaryawan->nama ?> (<?= $modelPenilaian[0]->idKaryawan->jenis_karyawan ?>)</td>
                     </tr>
                     <tr>
-                        <td width="100">Pend. Akhir</td>
+                        <th width="100">Pend. Akhir</th>
                         <td> : <?= $modelPenilaian[0]->idKaryawan->idPendidikanAkhir->pendidikan_akhir ?></td>
                     </tr>
+                    <?php if($modelPenilaian[0]->idKaryawan->jenis_karyawan == $modelPenilaian[0]->idKaryawan::PNS):  ?>
                     <tr>
-                        <td width="100">Jabatan</td>
-                        <td> : <?= $modelPenilaian[0]->idKaryawan->idJabatan->jabatan ?></td>
+                        <th width="100">Jabatan</th>
+                        <td>: 
+                            <?php 
+                                if (!empty($modelPenilaian[0]->idKaryawan->idJabatanKaryawan)) {
+                                 echo $modelPenilaian[0]->idKaryawan->idJabatanKaryawan->idJabatan->jabatan;
+                                }else{
+                                    echo '<span class="badge bg-orange">Jabatan Belum Dipilih</span>';
+                                }
+                            ?>
+                            
+                            Bidang : <?= $modelPenilaian[0]->idKaryawan->idBidang->bidang ?></td>
                     </tr>
+                    <?php else: ?>
+                    <tr>
+                        <th width="100">Bidang</th>
+                        <td>: <?= $modelPenilaian[0]->idKaryawan->jenis_karyawan; ?> Bidang : <?= $modelPenilaian[0]->idKaryawan->idBidang->bidang ?></td>
+                    </tr>
+                <?php endif; ?>
                 </tbody>
             </table>
         </div>
