@@ -4,6 +4,8 @@ $params = require __DIR__ . '/params.php';
 $db = require __DIR__ . '/db.php';
 
 $config = [
+    //'language' => 'en',
+    //'sourceLanguage' => 'en',
     'id' => 'basic',
     'name' => 'SPK DISPERINDAG',
     'basePath' => dirname(__DIR__),
@@ -15,10 +17,24 @@ $config = [
     'modules' => [
         'redactor' => 'yii\redactor\RedactorModule',
         'gridview' =>  [
-            'class' => '\kartik\grid\Module'
+            'class' => '\kartik\grid\Module',
+            'downloadAction' => 'gridview/export/download',
         ],
     ],
     'components' => [
+        // 'i18n' => [
+        //     'translations' => [
+        //         'app*' => [
+        //             'class' => 'yii\i18n\PhpMessageSource',
+        //             //'basePath' => '@app/messages',
+                    
+        //             'fileMap' => [
+        //                 'app' => 'app.php',
+        //                 'app/error' => 'error.php',
+        //             ],
+        //         ],
+        //     ],
+        // ],
         'request' => [
             // !!! insert a secret key in the following (if it is empty) - this is required by cookie validation
             'cookieValidationKey' => 'klsjdJHKJIOkdsjfsd7877678__==efdksj',

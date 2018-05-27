@@ -48,11 +48,26 @@ class TKriteria extends \yii\db\ActiveRecord
             [['kriteria'], 'string', 'max' => 25],
             [['id_bulan_valid_start','id_bulan_valid_end'],'in','range'=>array_keys(ModelBulan::ambilSemuaBulan())],
 
+            [['bobot'],'number','max'=>100,'min'=>5,'tooBig'=>'Total Bobot Seluruh Kriteria Tidak Boleh Melebihi 100 ','tooSmall'=>'Minimal Bobot Per Kriteria Adalah 5'],
+
             [['total_bobot'],'number','max'=>100,'tooBig'=>'Total Bobot Seluruh Kriteria Tidak Boleh Melebihi 100 '],
             
             [['id_tahun_valid_start'], 'exist', 'skipOnError' => true, 'targetClass' => TTahun::className(), 'targetAttribute' => ['id_tahun_valid_start' => 'id']],
             [['id_tahun_valid_end'], 'exist', 'skipOnError' => true, 'targetClass' => TTahun::className(), 'targetAttribute' => ['id_tahun_valid_end' => 'id']],
+            [['id_bulan_valid_start', 'id_tahun_valid_start', 'id_bulan_valid_end', 'id_tahun_valid_end'],'validatorBulanTahun'],
         ];
+    }
+
+    public function validatorBulanTahun($attribute, $params, $validator){
+        $startTahunBulan = $this->id_tahun_valid_start.$this->id_bulan_valid_start;
+        $endTahunBulan   = $this->id_tahun_valid_end.$this->id_bulan_valid_end;
+        if ($endTahunBulan < $startTahunBulan) {
+            $this->addError('id_bulan_valid_end','Valid End Harus Lebih Besar dari Valid Start');
+            $this->addError('id_tahun_valid_end','Valid End Harus Lebih Besar dari Valid Start');
+            return false;
+        }else{
+            return true;
+        }
     }
 
     /**

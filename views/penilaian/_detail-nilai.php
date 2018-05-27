@@ -11,7 +11,7 @@ use yii\helpers\Html;
 	<div class="col-md-12">
 		<caption>
 			Detail Nilai <?= $dataNilai[0]->idKaryawan->nama ?><br>
-			<small>Bulan <?= date('F',strtotime($dataNilai[0]->id_bulan)) ?> Tahun <?= $dataNilai[0]->idTahun->tahun ?></small>
+			
 		</caption>
 	</div>
 
@@ -22,7 +22,7 @@ use yii\helpers\Html;
 					<th>No</th>
 					<th>Kriteria</th>
 					<th>Nilai Asli</th>
-					<th>Hasil Akhir</th>
+					<th>Nilai Terbobotkan</th>
 				</tr>
 			</thead>
 			<tbody>
@@ -48,7 +48,7 @@ use yii\helpers\Html;
 					<?php endif; ?>
 				<?php endforeach; ?>
 				<tr>
-					<th style="text-align: center;" colspan="2">TOTAL</th>
+					<th style="text-align: center;" colspan="2">TOTAL (Hasil Akhir)</th>
 					<th><?= array_sum($nilai) ?></th>
 					<th><?= array_sum($nilai_normalisasi) ?></th>
 

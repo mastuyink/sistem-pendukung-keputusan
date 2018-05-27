@@ -12,6 +12,7 @@ use app\models\TKaryawan;
  */
 class TKaryawanSearch extends TKaryawan
 {
+    public $id_jabatan;
     /**
      * @inheritdoc
      */
@@ -41,7 +42,7 @@ class TKaryawanSearch extends TKaryawan
      */
     public function search($params)
     {
-        $query = TKaryawan::find();
+        $query = TKaryawan::find()->joinWith(['idJabatanKaryawan']);
 
         // add conditions that should always apply here
 
@@ -59,8 +60,6 @@ class TKaryawanSearch extends TKaryawan
 
         // grid filtering conditions
         $query->andFilterWhere([
-            'id' => $this->id,
-            'nip' => $this->nip,
             'id_jk' => $this->id_jk,
             'id_tempat_lahir' => $this->id_tempat_lahir,
             'tanggal_lahir' => $this->tanggal_lahir,
@@ -74,6 +73,7 @@ class TKaryawanSearch extends TKaryawan
 
         $query->andFilterWhere(['like', 'nama', $this->nama])
             ->andFilterWhere(['like', 'no_telp', $this->no_telp])
+            ->andFilterWhere(['like', 'nip', $this->nip])
             ->andFilterWhere(['like', 'alamat', $this->alamat]);
 
         return $dataProvider;

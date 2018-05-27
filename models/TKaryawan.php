@@ -36,6 +36,8 @@ class TKaryawan extends \yii\db\ActiveRecord
     public $id_provinsi;
     public $id_kabupaten;
     public $id_kecamatan;
+    const PNS = "PNS";
+    const THL_STAFF = "THL/STAFF";
     /**
      * @inheritdoc
      */
@@ -50,31 +52,35 @@ class TKaryawan extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['nip', 'nama', 'id_jk', 'id_tempat_lahir', 'tanggal_lahir', 'tanggal_kerja', 'id_bidang', 'id_jabatan', 'no_telp', 'alamat','id_pendidikan_akhir','tanggal_menjabat','id_kelurahan'], 'required'],
-            [['tanggal_lahir','tanggal_kerja','tanggal_menjabat'],'date', 'format'=>'php:Y-m-d'],
-            [['nip', 'id_jk', 'id_tempat_lahir', 'id_bidang', 'id_jabatan', 'id_user','jurusan'], 'integer'],
-            [['tanggal_lahir', 'tanggal_kerja', 'create_at', 'update_at','tanggal_menjabat'], 'safe'],
+            [['nip', 'nama', 'id_jk', 'id_tempat_lahir', 'tanggal_lahir', 'tanggal_kerja', 'id_bidang', 'no_telp', 'alamat','id_pendidikan_akhir','id_kelurahan','jenis_karyawan'], 'required'],
+            [['tanggal_lahir','tanggal_kerja'],'date', 'format'=>'php:Y-m-d'],
+            [['nip', 'id_jk', 'id_tempat_lahir', 'id_bidang', 'id_user','jurusan'], 'integer'],
+            [['tanggal_lahir', 'tanggal_kerja', 'create_at', 'update_at'], 'safe'],
             [['nama'], 'string', 'max' => 50],
             [['no_telp'], 'string', 'max' => 15],
             [['alamat'], 'string', 'max' => 100],
             [['id_jk'],'in','range'=>[self::LAKI_LAKI,self::PEREMPUAN]],
+            [['jenis_karyawan'],'in','range'=>[self::PNS,self::THL_STAFF]],
            // [['nip'],'integer','max'=>20],
             [['nip'], 'unique'],
             [['id_user'], 'unique'],
             [['id_tempat_lahir'], 'exist', 'skipOnError' => true, 'targetClass' => TKabupaten::className(), 'targetAttribute' => ['id_tempat_lahir' => 'id']],
             [['id_bidang'], 'exist', 'skipOnError' => true, 'targetClass' => TBidang::className(), 'targetAttribute' => ['id_bidang' => 'id']],
-            [['id_jabatan'], 'exist', 'skipOnError' => true, 'targetClass' => TJabatan::className(), 'targetAttribute' => ['id_jabatan' => 'id']],
             [['id_pendidikan_akhir'], 'exist', 'skipOnError' => true, 'targetClass' => TPendidikanAkhir::className(), 'targetAttribute' => ['id_pendidikan_akhir' => 'id']],
             [['id_kelurahan'], 'exist', 'skipOnError' => true, 'targetClass' => TKelurahan::className(), 'targetAttribute' => ['id_kelurahan' => 'id']],
             [['id_provinsi'], 'exist', 'skipOnError' => true, 'targetClass' => TProvinsi::className(), 'targetAttribute' => ['id_provinsi' => 'id']],
             [['id_kabupaten'], 'exist', 'skipOnError' => true, 'targetClass' => TKabupaten::className(), 'targetAttribute' => ['id_kabupaten' => 'id']],
             [['id_kecamatan'], 'exist', 'skipOnError' => true, 'targetClass' => TKecamatan::className(), 'targetAttribute' => ['id_kecamatan' => 'id']],
-            //['id_pendidikan_akhir','validasiJurusan'],
             ['jurusan', 'required', 'when' => function ($model) {
             return $model->id_pendidikan_akhir > 3;
             }, 'whenClient' => "function (attribute, value) {
             return $('#form-jurusan-akhir').val() > 3;
-            }"]
+            }"],
+            // [['id_jabatan','tanggal_menjabat'],'required','when'=>function($model){
+            //     return $model->jenis_karyawan == self::PNS;
+            // },'whenClient'=>"function (attribute, value) {
+            // return $('#radio-jenis-karyawan').val() == 'PNS';
+            // }"]
             ];
     }
 
@@ -92,9 +98,8 @@ class TKaryawan extends \yii\db\ActiveRecord
             'tanggal_lahir'       => 'Tanggal Lahir',
             'tanggal_kerja'       => 'Tanggal Kerja',
             'id_pendidikan_akhir' => 'Pendidikan Akhir',
-            'tanggal_menjabat'    => 'Tanggal Menjabat',
             'id_bidang'           => 'Bidang',
-            'id_jabatan'          => 'Jabatan',
+            //'id_jabatan'          => 'Jabatan',
             'no_telp'             => 'No Telp',
             'jurusan'             => 'Jurusan',
             'alamat'              => 'Alamat',
@@ -127,9 +132,9 @@ class TKaryawan extends \yii\db\ActiveRecord
     /**
      * @return \yii\db\ActiveQuery
      */
-    public function getIdJabatan()
+    public function getIdJabatanKaryawan()
     {
-        return $this->hasOne(TJabatan::className(), ['id' => 'id_jabatan']);
+        return $this->hasOne(TJabatanKaryawan::className(), ['id_karyawan' => 'id']);
     }
 
     /**
@@ -182,16 +187,6 @@ class TKaryawan extends \yii\db\ActiveRecord
             TJurusanKaryawan::setJurusan($data);
         }
         return true;
-    }
-
-    public function validasiJurusan($attribute, $params, $validator){
-        if ($this->id_pendidikan_akhir > 2 && $this->jurusan == null) {
-            return $this->addError('jurusan','Jurursan Tidak Boleh Kosong');
-            // Yii::$app->session->setFlash('danger', 'Salah Bro');
-            // return false;
-        }else{
-                return true;
-         }
     }
     
    

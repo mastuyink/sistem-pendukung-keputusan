@@ -544,15 +544,14 @@ $I->checkOption('#agree');
 
 ### clearField
  
-lears given field which isn't empty.
+Clears given field which isn't empty.
 
-`` php
-?php
-I->clearField('#username');
->
-``
+``` php
+<?php
+$I->clearField('#username');
+```
 
-param $field
+ * `param` $field
 
 
 ### click
@@ -628,8 +627,8 @@ $I->clickWithRightButton(['css' => '.checkout'], 20, 50);
 ```
 
  * `param string` $cssOrXPath css or xpath of the web element (body by default).
- * `param int`    $offsetX
- * `param int`    $offsetY
+ * `param int` $offsetX
+ * `param int` $offsetY
 
 @throws \Codeception\Exception\ElementNotFound
 

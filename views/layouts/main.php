@@ -3,7 +3,10 @@ use yii\helpers\Html;
 
 /* @var $this \yii\web\View */
 /* @var $content string */
-
+$customScript = <<< SCRIPT
+    $("[data-toggle=\'tooltip\']").tooltip(); 
+SCRIPT;
+$this->registerJs($customScript, \yii\web\View::POS_READY);
 
 if (Yii::$app->controller->action->id === 'login') { 
 /**

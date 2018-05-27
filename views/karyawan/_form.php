@@ -4,15 +4,16 @@ use yii\helpers\Html;
 use yii\helpers\Url;
 use yii\widgets\ActiveForm;
 use yii\widgets\MaskedInput;
-use kartik\select2\Select2;
+use kartik\widgets\Select2;
 /* @var $this yii\web\View */
 /* @var $model app\models\TKaryawan */
 /* @var $form yii\widgets\ActiveForm */
-$model->id_jk = 1;
 if ($model->isNewRecord) {
+  $model->id_jk = 1;
   $listKabupaten = [];
   $listKecamatan = [];
   $listKelurahan = [];
+ // $model->jenis_karyawan = 'PNS';
 }
 ?>
 
@@ -20,29 +21,12 @@ if ($model->isNewRecord) {
 
     <?php $form = ActiveForm::begin(); ?>
 <div class="row">
-  <div class="col-md-6">
-    <?= $form->field($model, 'nip')->textInput(['placeholder'=>'Masukkan Nomor Induk Karyawan']) ?>
-  </div>
-  <div class="col-md-6">
-    <?= $form->field($model, 'nama')->textInput(['maxlength' => true,'placeholder'=>'Masukkan Nama Karyawan']) ?>
-  </div>
-</div>
-<div class="row">
-  <div class="col-md-3">
-    <?= $form->field($model, 'id_tempat_lahir')->widget(Select2::classname(), [
-    'data' => $listTempatLahir,
-    'options' => [
-        'placeholder' => 'Pilih Tempat Lahir...',
-
-    ],
-    'pluginOptions' => [
-        'allowClear' => false
-    ],
-    ]);
-     ?>
-  </div>
-  <div class="col-md-3">
-    <?= $form->field($model, 'tanggal_lahir')->widget(kato\pickadate\Pickadate::classname(), [
+  <div class="col-md-5">
+    <div class="col-md-12">
+      <?= $form->field($model, 'nip')->textInput(['placeholder'=>'Masukkan Nomor Induk Karyawan']) ?>
+    </div>
+    <div class="col-md-12">
+      <?= $form->field($model, 'tanggal_lahir')->widget(kato\pickadate\Pickadate::classname(), [
             'isTime' => false,
             'id'=>'Tanggal Lahir',
             'options'=>[
@@ -50,105 +34,47 @@ if ($model->isNewRecord) {
             ]
 
           ]); ?>
-  </div>
-
-  <div class="col-md-3">
-    <?= $form->field($model, 'id_jk')->radioList([$model::LAKI_LAKI=>'Laki-Laki',$model::PEREMPUAN=>'Perempuan'],['inline'=>false]); ?>
-  </div>
-  <div class="col-md-3">
-   <?= $form->field($model, 'no_telp')->widget(MaskedInput::className(), [
-    'mask'               => ['999-999-999-999'],
-    'clientOptions'      => [
-    'removeMaskOnSubmit' => true,
-    ]
-    ]) ?>
-  </div>
-</div>
-
-<div class="row">
-  <div class="col-md-4">
-    <?= $form->field($model, 'tanggal_kerja')->widget(kato\pickadate\Pickadate::classname(), [
+    </div>
+    <div class="col-md-12">
+     <?= $form->field($model, 'no_telp')->widget(MaskedInput::className(), [
+      'mask'               => ['999-999-999-999'],
+      'clientOptions'      => [
+      'removeMaskOnSubmit' => true,
+      ]
+      ]) ?>
+    </div>
+    <div class="col-md-12">
+      <?= $form->field($model, 'tanggal_kerja')->widget(kato\pickadate\Pickadate::classname(), [
             'isTime' => false,
             'id'=>'Tanggal Kerja',
             'options'=>[
                 'id' => 'picker-tanggal-kerja',
-                'class' => 'form-control form-tanggal'
+                'class' => 'form-control'
             ]
 
           ]); ?>
-  </div>
-  <div class="col-md-4">
-    <?= $form->field($model, 'id_bidang')->dropDownList($listBidang, ['prompt' => 'Pilih Bidang ...']); ?>
-  </div>
-  <div class="col-md-4">
-    <?= $form->field($model, 'id_jabatan')->dropDownList($listJabatan, ['prompt' => 'Pilih Jabatan ...']); ?>
-  </div>
-</div>
+    </div>
+    <div class="col-md-12">
+     <?= $form->field($model, 'id_pendidikan_akhir')->dropDownList($listPendidikan, [
+        'prompt' => 'Pilih Pendidikan Terakhir ...',
+        'id' => 'form-jurusan-akhir'
+        ]); ?>
+    </div>
+    <div class="col-md-12">
+      <?= $form->field($model, 'id_provinsi')->widget(Select2::classname(), [
+      'data' => $listProvinsi,
+      'options' => [
+          'placeholder' => 'Pilih Provinsi...',
+          'id'          => 'dropdown-provinsi',
 
-<div class="row">
-  <div class="col-md-4">
-    <?= $form->field($model, 'tanggal_menjabat')->widget(kato\pickadate\Pickadate::classname(), [
-            'isTime' => false,
-            'options'=>[
-                'id' => 'picker-tanggal-menjabat',
-            ]
-
-          ]); ?>
-  </div>
-  <div class="col-md-4">
-   <?= $form->field($model, 'id_pendidikan_akhir')->dropDownList($listPendidikan, [
-      'prompt' => 'Pilih Pendidikan Terakhir ...',
-      'id' => 'form-jurusan-akhir'
-      ]); ?>
-  </div>
-  <div id="div-jurusan" class="col-md-4">
-    
-    <?= $form->field($model, 'jurusan')->widget(Select2::classname(), [
-    'data' => $listJurusan,
-    'options' => [
-        'placeholder' => 'Pilih Jurursan...',
-
-    ],
-    'pluginOptions' => [
-        'allowClear' => false
-    ],
-    ]);
-     ?>
-  </div>
-
-</div>
-
-<div class="row">
-  <div class="col-md-3">
-    <?= $form->field($model, 'id_provinsi')->widget(Select2::classname(), [
-    'data' => $listProvinsi,
-    'options' => [
-        'placeholder' => 'Pilih Provinsi...',
-        'id'          => 'dropdown-provinsi',
-
-    ],
-    'pluginOptions' => [
-        'allowClear' => false
-    ],
-    ]);
-     ?>
-  </div>
-
-  <div class="col-md-3">
-    <?= $form->field($model, 'id_kabupaten')->widget(Select2::classname(), [
-    'data' => $listKabupaten,
-    'options' => [
-        'placeholder' => 'Pilih Kabupaten...',
-        'id'          => 'dropdown-kabupaten'
-    ],
-    'pluginOptions' => [
-        'allowClear' => false
-    ],
-    ]);
-     ?>
-  </div>
-
-  <div class="col-md-3">
+      ],
+      'pluginOptions' => [
+          'allowClear' => false
+      ],
+      ]);
+       ?>
+    </div>
+    <div class="col-md-12">
     <?= $form->field($model, 'id_kecamatan')->widget(Select2::classname(), [
     'data' => $listKecamatan,
     'options' => [
@@ -161,28 +87,97 @@ if ($model->isNewRecord) {
     ]);
      ?>
   </div>
-  <div class="col-md-3">
-    <?= $form->field($model, 'id_kelurahan')->widget(Select2::classname(), [
-    'data' => $listKelurahan,
-    'options' => [
-        'placeholder' => 'Pilih Kelurahan...',
-        'id'          => 'dropdown-kelurahan'
+  </div>
 
-    ],
-    'pluginOptions' => [
-        'allowClear' => false
-    ],
-    ]);
-     ?>
+  
+
+  <div class="col-md-5">
+
+    <div class="col-md-12">
+      <?= $form->field($model, 'nama')->textInput(['maxlength' => true,'placeholder'=>'Masukkan Nama Karyawan']) ?>
+    </div>
+
+    <div class="col-md-12">
+      <?= $form->field($model, 'id_tempat_lahir')->widget(Select2::classname(), [
+      'data' => $listTempatLahir,
+      'options' => [
+          'placeholder' => 'Pilih Tempat Lahir...',
+
+      ],
+      'pluginOptions' => [
+          'allowClear' => false
+      ],
+      ]);
+       ?>
+    </div>
+    <div class="col-md-12">
+      <?= $form->field($model, 'id_jk')->radioList([$model::LAKI_LAKI=>'Laki-Laki',$model::PEREMPUAN=>'Perempuan'],['inline'=>false]); ?>
+    </div>
+    <div class="col-md-12">
+    <?= $form->field($model, 'jenis_karyawan')->radioList(['PNS'=>'PNS','THL/STAFF'=>'THL/STAFF'], [
+      'id' => 'radio-jenis-karyawan',
+      // 'item' => function($index, $label, $name, $checked, $value) {
+          
+      //     $return = '<div style="padding-right: 20px;"><input type="radio" id="radio-'.$index.'" name="'.$name.'" value="'.$value.'" class="radio-jenis-karyawan-item" style="margin-right: 10px;">';
+      //     $return .= '<label for="radio-'.$index.'">'.$label.'</label></div>';
+
+          
+      //     return $return;
+      //  },
+      ]); ?>
+</div>
+    <div class="col-md-12">
+      <?= $form->field($model, 'id_bidang')->dropDownList($listBidang, ['prompt' => 'Pilih Bidang ...']); ?>
+    </div>
+    <div id="div-jurusan" class="col-md-12"> 
+      <?= $form->field($model, 'jurusan')->widget(Select2::classname(), [
+      'data' => $listJurusan,
+      'options' => [
+          'placeholder' => 'Pilih Jurursan...',
+
+      ],
+      'pluginOptions' => [
+          'allowClear' => false
+      ],
+      ]);
+       ?>
+    </div>
+    <div class="col-md-12">
+      <?= $form->field($model, 'id_kabupaten')->widget(Select2::classname(), [
+      'data' => $listKabupaten,
+      'options' => [
+          'placeholder' => 'Pilih Kabupaten...',
+          'id'          => 'dropdown-kabupaten'
+      ],
+      'pluginOptions' => [
+          'allowClear' => false
+      ],
+      ]);
+       ?>
+    </div>
+    <div class="col-md-12">
+      <?= $form->field($model, 'id_kelurahan')->widget(Select2::classname(), [
+      'data' => $listKelurahan,
+      'options' => [
+          'placeholder' => 'Pilih Kelurahan...',
+          'id'          => 'dropdown-kelurahan'
+
+      ],
+      'pluginOptions' => [
+          'allowClear' => false
+      ],
+      ]);
+       ?>
+    </div>
+  </div>
+
+</div>
+<div class="col-md-10">
+ <?= $form->field($model, 'alamat')->textArea(['maxlength' => true]) ?>
   </div>
   
 </div>
 <div class="row">
-  
-  <div class="col-md-12">
-    <?= $form->field($model, 'alamat')->textArea(['maxlength' => true]) ?>
-  </div>
-</div>
     <div class="form-group">
         <?= Html::submitButton($model->isNewRecord ? 'Create' : 'Update', ['class' => $model->isNewRecord ? 'btn btn-success btn-block btn-lg btn-flat' : 'btn btn-primary btn-block btn-lg btn-flat']) ?>
     </div>
@@ -265,6 +260,8 @@ function Kabupaten(idProvinsi){
 
 var x = $('#form-jurusan-akhir').val();
 jurusan(x);
+var jenis = $('.radio-jenis-karyawan-item:radio:checked').val();
+checkJenisKaryawan(jenis);
 
 $('#form-jurusan-akhir').on('change',function(){
   var x = $('#form-jurusan-akhir').val();
@@ -274,12 +271,29 @@ $('#form-jurusan-akhir').on('change',function(){
 function jurusan(x){
   if (x > 3) {
     $('.field-tkaryawan-jurusan').removeClass('has-success');
-    $('#div-jurusan').css('visibility','visible');
+    $('#div-jurusan').show(200);
   } else {
-    $('#div-jurusan').css('visibility','hidden');
+    $('#div-jurusan').hide(200);
   }
 
 }
+
+$('.radio-jenis-karyawan-item').on('change',function(){
+  var jenis = $('.radio-jenis-karyawan-item:radio:checked').val();
+  checkJenisKaryawan(jenis);
+});
+
+function checkJenisKaryawan(jenis){
+  if (jenis == 'PNS') {
+    $('.form-pns-only').show(200);
+  } else if (jenis == 'THL/STAFF') {
+    $('.form-pns-only').hide(200);
+  } 
+  // else {
+  //   alert('Something Its Wrong Please Check Type Karyawan Value');
+  // }
+}
+
 $('#picker-tanggal-lahir').pickadate({
   max:[1996,01,01],
   min:-21535,
@@ -303,16 +317,6 @@ $('#picker-tanggal-kerja').pickadate({
   clear: 'Hapus',
   close: 'Keluar'
 });
-$('#picker-tanggal-menjabat').pickadate({
-  max:true,
-  min:-10950,
-  selectYears: true,
-  selectMonths: true,
-  format: 'dd-mmm-yyyy',
-  formatSubmit: 'yyyy-mm-dd',
-  today: 'Hari Ini',
-  clear: 'Hapus',
-  close: 'Keluar'
-});
+
     ", \yii\web\View::POS_READY);
 ?>

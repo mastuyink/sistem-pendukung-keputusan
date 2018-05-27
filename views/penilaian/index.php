@@ -5,6 +5,7 @@ use yii\helpers\Url;
 use kartik\grid\GridView;
 use yii\widgets\Pjax;
 use kartik\dialog\Dialog;
+use yii\helpers\ArrayHelper;
 /* @var $this yii\web\View */
 /* @var $searchModel app\models\TPenilaianSearch */
 /* @var $dataProvider yii\data\ActiveDataProvider */
@@ -35,32 +36,30 @@ echo Dialog::widget([
     <p>
         <?= Html::a('', ['create'], ['class' => 'btn btn-success btn-lg btn-flat fa fa-plus-square']) ?>
     </p>
-<div class="row">
+<!-- <div class="row">
     <div class="col-md-12">
         <div class="box box-primary collapsed-box">
             <div class="box-header with-border">  
             <button type="button" class="btn btn-box-tool btn-block" data-widget="collapse">
                 <h3 class="box-title">Filter Data</h3>
-            </button>
+            </button> -->
               <!-- /.box-tools -->
-            </div>
+            <!-- </div> -->
             <!-- /.box-header -->
-            <div class="box-body" style="">
-              <p>
-                <?= $this->render('_search', [
-                    'model'        => $searchModel,
-                    'listBulan'    => $listBulan,
-                    'listKaryawan' => $listKaryawan,
-                    'listKriteria' => $listKriteria,
-                    'listTahun'    => $listTahun,
-                    'currentUrl' => 'index'
-                    ]); ?>
-            </p>
+           <!--  <div class="box-body" style="">
+              <p> -->
+                <?php 
+                // $this->render('_search', [
+                //     'model'        => $searchModel,
+                //     'listBulan'    => $listBulan,
+                //     'listKaryawan' => $listKaryawan,
+                //     'listKriteria' => $listKriteria,
+                //     'listTahun'    => $listTahun,
+                //     ]); ?>
+            <!-- </p>
             </div>
-            <!-- /.box-body -->
         </div>
-          <!-- /.box -->
-    </div>
+    </div> -->
     
 </div>
 <center><b id="loading-pjax"></b></center>
@@ -82,7 +81,7 @@ echo Dialog::widget([
             'neverTimeout' =>true,
         ],
         'columns' => [
-            ['class' => 'yii\grid\SerialColumn'],
+            ['class' => 'kartik\grid\SerialColumn'],
 
             [
                 'header'=> 'Tahun',
@@ -95,34 +94,89 @@ echo Dialog::widget([
             ],
             [
                 'header' => 'Bulan',
-                'format'    =>'raw',
-                'value'     =>function($model){
+                'format' => 'raw',
+                'value'  =>function($model){
                     return "<span class='fa fa-calendar'></span> ".$model::ambilNamaBulan($model->id_bulan)."-".$model->idTahun->tahun;;
                 },
 
                 'group'      =>true,  // enable grouping,
                 'subGroupOf' =>1,
                 'groupedRow' =>true,
+                
+            ],
+            // [
+            //     'header' => '',
+            //     'format'=> 'raw',
+            //     'attribute'  => 'id_bulan',
+            //     'filterType' => GridView::FILTER_SELECT2,
+            //     'filter'     => $listBulan, 
+            //     'filterWidgetOptions'=>[
+            //         'pluginOptions'=>['allowClear'=>true],
+            //           ],
+            //     'filterInputOptions'=>['placeholder'=>'Semua Bulan...'],
+            //     'value'=> function($model){
+            //         return "";
+            //     }
+            // ],
+            // [
+            //     'header' => '',
+            //     'format'=> 'raw',
+            //     'attribute'  => 'id_tahun',
+            //     'filterType' => GridView::FILTER_SELECT2,
+            //     'filter'     => $listTahun, 
+            //     'filterWidgetOptions'=>[
+            //         'pluginOptions'=>['allowClear'=>true],
+            //           ],
+            //     'filterInputOptions'=>['placeholder'=>'Semua Tahun...'],
+            //     'value'=> function($model){
+            //         return "";
+            //     }
+            // ],
+            [
+                'header'     => 'Nama',
+                'format'     => 'raw',
+                'attribute'  => 'id_karyawan',
+                'filterType' => GridView::FILTER_SELECT2,
+                'filter'     => $listKaryawan, 
+                'filterWidgetOptions'=>[
+                    'pluginOptions'=>['allowClear'=>true],
+                      ],
+                'filterInputOptions'=>['placeholder'=>'Semua...'],
+                'value'=> function($model){
+                    return $model->idKaryawan->nama;
+                }
             ],
             [
-                'header' => 'Nama',
-                'format' => 'raw',
-                'value' => 'idKaryawan.nama'
-            ],
-            [
-                'header' => 'Kriteria',
-                'format' => 'raw',
-                'value' => 'idKriteria.kriteria'
+                'header'     => 'Kriteria',
+                'format'     => 'raw',
+                'attribute'  => 'id_kriteria',
+                'filterType' => GridView::FILTER_SELECT2,
+                'filter'     => $listKriteria, 
+                'filterWidgetOptions'=>[
+                    'pluginOptions'=>['allowClear'=>true],
+                      ],
+                'filterInputOptions'=>['placeholder'=>'Semua...'],
+                'value'=> function($model){
+                    return $model->idKriteria->kriteria;
+                }
             ],
             [
                 'header' => 'NIlai',
                 'format' => 'raw',
-                'value' => 'nilai'
+                'width'=> '75px',
+                'attribute' => 'nilai',
+                'filterInputOptions'=>['placeholder'=>'...','class'=>'form-control form-number-only'],
+
             ],
             [
                 'header' => 'Bobot',
                 'format' => 'raw',
-                'value' => 'bobot_saat_ini'
+                'attribute'  => 'bobot_saat_ini',
+                'filterInputOptions'=>['placeholder'=>'...','class'=>'form-control form-number-only'],
+                'width'=> '75px',
+                'value'=> function($model){
+                    return $model->bobot_saat_ini;
+                }
             ],
             [
                 'header' => 'Nilai Normalisasi',
@@ -164,3 +218,21 @@ echo Dialog::widget([
 </div>
 </div>
 
+<?php 
+$this->registerJs('
+$(".form-number-only").keydown(function (e) {
+        // Allow: backspace, delete, tab, escape, enter and .
+        if ($.inArray(e.keyCode, [46, 8, 9, 27, 13, 110, 190]) !== -1 ||
+             // Allow: Ctrl+A, Command+A
+            (e.keyCode === 65 && (e.ctrlKey === true || e.metaKey === true)) || 
+             // Allow: home, end, left, right, down, up
+            (e.keyCode >= 35 && e.keyCode <= 40)) {
+                 return;
+        }
+        // Ensure that it is a number and stop the keypress
+        if ((e.shiftKey || (e.keyCode < 48 || e.keyCode > 57)) && (e.keyCode < 96 || e.keyCode > 105)) {
+            e.preventDefault();
+        }
+    });
+    ', \yii\web\View::POS_READY);
+?>

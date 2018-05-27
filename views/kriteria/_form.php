@@ -10,19 +10,23 @@ use yii\widgets\MaskedInput;
 
 <div class="tkriteria-form">
 
-    <?php $form = ActiveForm::begin(); ?>
+    <?php $form = ActiveForm::begin(['enableClientValidation'=>false]); ?>
     
-
+<div class="row">
+  <div class="col-sm-6">
     <?= $form->field($model, 'kriteria')->textInput(['maxlength' => true]) ?>
-
+  </div>
+  <div class="col-sm-6">
     <?= $form->field($model, 'bobot')->widget(MaskedInput::className(), [
     'mask'               => ['99%'],
     'clientOptions'      => [
     'removeMaskOnSubmit' => true,
     ]
     ])->label('Bobot Penilaian Dalam %') ?>
-
-    <?= Html::error($model, 'total_bobot', ['style'=>'color:red;','class' => 'help-block']); ?>
+    <?= Html::error($model, 'total_bobot', ['style'=>'color:#dd4b39;']); ?>
+  </div>
+</div>
+    
 <div class="row">
   <div class="col-sm-2">
     <?= $form->field($model, 'id_bulan_valid_start')->dropDownList($listBulan, ['id' => 'drop-bulan-start']); ?>

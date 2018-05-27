@@ -12,30 +12,7 @@ $this->title = 'Hasil Akhir Penilaian';
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 <div class="tpenilaian-index">
-    <div class="row">
-        <div class="col-md-12">
-            <div class="box box-primary collapsed-box">
-                <div class="box-header with-border">  
-                <button type="button" class="btn btn-box-tool btn-block" data-widget="collapse">
-                    <h3 class="box-title">Filter Data</h3>
-                </button>
-                  <!-- /.box-tools -->
-                </div>
-                <!-- /.box-header -->
-                <div class="box-body" style="">
-                    <p>
-                        <?= $this->render('_search', [
-                            'model'        => $searchModel,
-                            'listBulan'    => $listBulan,
-                            'listKaryawan' => $listKaryawan,
-                            'listTahun'    => $listTahun,
-                            'currentUrl' => 'hasil-akhir'
-                            ]); ?>
-                    </p>
-                </div>
-            </div>
-        </div>
-    </div>
+    
 <div class="row">
 <div class="col-md-12">
     <center><b id="loading-pjax"></b></center>
@@ -76,7 +53,16 @@ $this->params['breadcrumbs'][] = $this->title;
             [
                 'header' => 'Nama',
                 'format' => 'raw',
-                'value' => 'idKaryawan.nama'
+                'attribute'  => 'id_karyawan',
+                'filterType' => GridView::FILTER_SELECT2,
+                'filter'     => $listKaryawan, 
+                'filterWidgetOptions'=>[
+                    'pluginOptions'=>['allowClear'=>true],
+                      ],
+                'filterInputOptions'=>['placeholder'=>'Semua Karyawan...'],
+                'value'=> function($model){
+                    return $model->idKaryawan->nama;
+                }
             ],
             // [
             //     'header'  => 'bulan',
@@ -91,6 +77,8 @@ $this->params['breadcrumbs'][] = $this->title;
             [
                 'header' => 'Hasil Akhir',
                 'format' => 'raw',
+                //'attribute' => 'hasil_akhir',
+               // 'filter' =>
                 'value' => function($model,$index){
 
                     return $model->total;

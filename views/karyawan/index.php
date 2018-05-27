@@ -3,23 +3,31 @@
 use yii\helpers\Html;
 use kartik\grid\GridView;
 use yii\helpers\Url;
+use yii\helpers\ArrayHelper;
 /* @var $this yii\web\View */
 /* @var $searchModel app\models\TKaryawanSearch */
 /* @var $dataProvider yii\data\ActiveDataProvider */
-$this->title = 'List Karyawan';
+$this->title = 'Data Karyawan';
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 <div class="tkaryawan-index">
-    <?php // echo $this->render('_search', ['model' => $searchModel]); ?>
-
-    <p>
+<p>
         <?= Html::a('', ['create'], ['class' => 'btn btn-success btn-lg btn-flat fa fa-plus-square']) ?>
-    </p>
+</p>
+<div class="row">
+    <?php  
+    // $this->render('_search', [
+    //     'model' => $searchModel,
+    //     'listKaryawan' => $listKaryawan
+    //     ]); 
+        ?>
+</div>
+    
 <div class="row">
     <div class="col-md-12">
         <div class="box box-primary">
             <div class="box-header with-border">
-                <h3 class="box-title">Data Nilai</h3>
+                <h3 class="box-title">Tabel Karyawan</h3>
             </div>
             
             <div class="box-body" style="">
@@ -27,105 +35,114 @@ $this->params['breadcrumbs'][] = $this->title;
         'dataProvider' => $dataProvider,
         'filterModel' => $searchModel,
         //'panel'=>['type'=>'primary'],
+        'options' => [
+            'style' => 'overflow: auto; word-wrap: break-word;'
+        ],
         'columns' => [
             ['class' => 'yii\grid\SerialColumn'],
 
-            'nip',
-            'nama',
             [
-                'header'=> 'L/P',
+                'header'=> 'NIP',
                 'format' => 'raw',
+                'attribute' => 'nip',
+                'filterType'=>GridView::FILTER_SELECT2,
+                'filter'=>ArrayHelper::map($listKaryawan, 'nip', 'nip'), 
+                'filterWidgetOptions'=>[
+                    'pluginOptions'=>['allowClear'=>true],
+                      ],
+                'filterInputOptions'=>['placeholder'=>'Semua NIP...'],
+                'value'=> function($model){
+                    return $model->nip;
+                }
+            ],
+            [
+                'header'=> 'Nama',
+                'attribute' => 'nama',
+                'filterType'=>GridView::FILTER_SELECT2,
+                'filter'=>ArrayHelper::map($listKaryawan, 'id', 'nama'), 
+                'filterWidgetOptions'=>[
+                    'pluginOptions'=>['allowClear'=>true],
+                      ],
+                'filterInputOptions'=>['placeholder'=>'Semua Karyawan...'],
+                'value'=> function($model){
+                    return $model->nama;
+                }
+            ],
+            [
+                'header'              => 'L/P',
+                'format'              => 'raw',
+                'attribute'           => 'id_jk',
+                //'filterType'          => GridView::FILTER_SELECT2,
+                'filter'              => ['1'=>'Laki-Laki','2'=>'Perempuan'], 
+                // 'filterWidgetOptions' => [
+                //     'pluginOptions'=>['allowClear'=>true],
+                //       ],
+                'filterInputOptions'=>['prompt'=>'Semua...','class'=>'form-control'],
                 'value' => function($model){
                     return $model->jenisKelamin($model->id_jk);
                 }
             ],
-            // [
-            //     'header'=> 'TTL',
-            //     'format' => 'raw',
-            //     'value'=> function($model){
-            //         $tgl_lahir = new DateTime($model->tanggal_lahir);
-            //         $hari_ini = new DateTime();
-            //         $selisih = $hari_ini->diff($tgl_lahir);
-            //         return "<center>".$model->idTempatLahir->tempat_lahir.", ".date('d-m-Y',strtotime($model->tanggal_lahir))."<br><b>".$selisih->y." Tahun</b></center>";
-            //     }
-            // ],
-            // [
-            //     'header'=> 'Tanggal Kerja',
-            //     'format' => 'raw',
-            //     'value'=> function($model){
-            //         $tgl_lahir = new DateTime($model->tanggal_kerja);
-            //         $hari_ini = new DateTime();
-            //         $selisih = $hari_ini->diff($tgl_lahir);
-            //         return "<center>".date('d-m-Y',strtotime($model->tanggal_kerja))."<br><b>".$selisih->y." Tahun</b></center>";
-            //     }
-            // ],
             [
-                'header'=> 'Bidang',
-                'format' => 'raw',
-                'value'=> 'idBidang.bidang'
+                'header'     => 'Bidang',
+                'format'     => 'raw',
+                'attribute'  => 'id_bidang',
+                'filterType' =>GridView::FILTER_SELECT2,
+                'filter'     =>$listBidang, 
+                'filterWidgetOptions'=>[
+                    'pluginOptions'=>['allowClear'=>true],
+                      ],
+                'filterInputOptions'=>['placeholder'=>'Semua...'],
+                'value'=> function($model){
+                    return $model->idBidang->bidang;
+                }
             ],
             [
-                'header'=> 'Jabatan',
-                'format' => 'raw',
-                'value'=> 'idJabatan.jabatan'
+                'header'              => 'Jabatan',
+                'format'              => 'raw',
+                'attribute'           => 'id_jabatan',
+                'hAlign' => 'center',
+                'filterType'          =>GridView::FILTER_SELECT2,
+                'filter'              =>$listJabatan, 
+                'filterWidgetOptions' =>[
+                    'pluginOptions'=>['allowClear'=>true],
+                      ],
+                'filterInputOptions'=>['placeholder'=>'Semua...'],
+                'value'=> function($model){
+                    if ($model->jenis_karyawan != 'PNS') {
+                        return "STAFF/THL";
+                    }else{
+                        $tombolPilihJabatan = Html::a('', ['/karyawan/pilih-jabatan','id_karyawan'=>$model->id], [
+                            'class' => 'bg-navy btn btn-xs btn-flat fa fa-briefcase',
+                            'data-toggle'=>'tooltip',
+                            'title' => 'Pilih Jabatan',
+                        ]);
+                        if (!empty($model->idJabatanKaryawan)) {
+                           $jabatan = $model->idJabatanKaryawan->idJabatan->jabatan.'<br>'.date('d-m-Y',strtotime($model->idJabatanKaryawan->tanggal_menjabat));
+                        }else{
+                            $jabatan = 'Pilih Jabatan' ;
+                        }
+                        
+                         return $jabatan.'<br>'.$tombolPilihJabatan;
+                    }
+                }
             ],
-            // [
-            //     'header'=> 'Lama Menjabat',
-            //     'format' => 'raw',
-            //     'value'=> function($model){
-            //         $tanggal_menjabat = new DateTime($model->tanggal_menjabat);
-            //         $hari_ini = new DateTime();
-            //         $selisih = $hari_ini->diff($tanggal_menjabat);
-            //         return "<center>".date('d-m-Y',strtotime($model->tanggal_menjabat))."<br><b>".$selisih->y." Tahun</b></center>";
-            //     }
-
-            // ],
-            // [
-            //     'header'=> 'Pendidikan<br>Akhir',
-            //     'format' => 'raw',
-            //     'value'=> function($model){
-            //         if ($model->id_pendidikan_akhir > 2) {
-            //             return $model->idPendidikanAkhir->pendidikan_akhir."<br>".$model->idJurusanKaryawan->jurusan->jurusan;
-            //         }else{
-            //             return $model->idPendidikanAkhir->pendidikan_akhir;
-            //         }
-            //     }
-            // ],
             [
                 'header' => 'Telp',
                 'value' => 'no_telp'
             ],
-            // [
-            //     'header' => 'Alamat',
-            //     'value' => 'alamat'
-            // ],
-            // [
-            //     'header'=> 'Dibuat',
-            //     'format' => 'raw',
-            //     'value' => function($model){
-            //         return date('d-m-Y H:i',strtotime($model->create_at));
-            //     }
-            // ],
-            // [
-            //     'header'=> 'Update',
-            //     'format' => 'raw',
-            //     'value' => function($model){
-            //         return date('d-m-Y H:i',strtotime($model->update_at));
-            //     }
-            // ],
 
             [
                 'header' => 'Action',
                 'format' => 'raw',
                 'value' => function($model){
                     $edit = Html::a('', ['update','id'=>$model->id], [
-                        'class' => 'btn btn-sm btn-primary fa fa-pencil',
+                        'class' => 'btn btn-xs btn-flat btn-primary fa fa-pencil',
                         'data-toggle' => 'tooltip',
                         'title' => 'Update',
                         'id' => 'btn-update-'.$model->id
                     ]);
                     $delete = Html::a('', ['delete','id'=>$model->id], [
-                        'class'       => 'btn btn-sm btn-danger fa fa-trash',
+                        'class'       => 'btn btn-xs btn-flat btn-danger fa fa-trash',
                         'data-toggle' => 'tooltip',
                         'title'       => 'Delete',
                         'id' => 'btn-delete-'.$model->id,
@@ -135,13 +152,13 @@ $this->params['breadcrumbs'][] = $this->title;
                         ],
                     ]);
                     $detail = Html::button('', [
-                        'class'       => 'btn btn-sm btn-warning fa fa-eye btn-detail-karyawan',
+                        'class'       => 'btn btn-xs btn-flat btn-warning fa fa-eye btn-detail-karyawan',
                         'data-toggle' => 'tooltip',
                         'title'       => 'Lihat Detail',
                         'id'          => 'btn-detail-karyawan'.$model->id,
                         'id-karyawan' => $model->id
                     ]);
-                    return $detail." ".$edit." ".$delete;
+                    return $detail."".$edit."".$delete;
                 }
             ]
         ],

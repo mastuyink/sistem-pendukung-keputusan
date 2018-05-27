@@ -43,29 +43,8 @@ $model->id_tahun = date('Y')
     ],
     ]); ?>
     <?= $form->field($model, 'id_kriteria')->radioList([], [
-        'id' => 'tpenilaian-id_kriteria',
-        'onchange'=>' 
-        var vkriteria = $("input:radio.radio-kriteria-penilaian:checked").val();
-        if (vkriteria == "") {
-            $("#div-nilai").hide();
-        } else if (vkriteria == "1" ) {
-            $("#div-jumlah-absensi").show();
-            $("#div-nilai").hide();
-        } else {
-            $("#div-jumlah-absensi").hide();
-            $("#div-nilai").show();
-        }'
-
-    ])->label('Kriteria Penilaian'); ?>
-    <div id="div-jumlah-absensi">
-        <?= $form->field($model, 'jumlah_absensi')->widget(MaskedInput::className(), [
-        'mask'               => ['9','99'],
-        'clientOptions'      => [
-        'removeMaskOnSubmit' => false,
-        ]
-        ])?>
-    </div>
-    <div id="div-nilai">
+        'id' => 'tpenilaian-id_kriteria',])->label('Kriteria Penilaian'); ?>
+    <div>
         <?= $form->field($model, 'nilai')->widget(MaskedInput::className(), [
         'mask'               => ['999','9.99','99.99'],
         'clientOptions'      => [

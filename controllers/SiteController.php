@@ -29,6 +29,7 @@ class SiteController extends Controller
             ],
         ];
     }
+    
 
     public function actions()
     {
@@ -39,6 +40,7 @@ class SiteController extends Controller
         ];
     }
 
+    
     /**
      * Displays homepage.
      *

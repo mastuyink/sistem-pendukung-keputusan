@@ -21,20 +21,15 @@ class Signup extends Model
     public function rules()
     {
         return [
+            [['username','email','password','level'],'required'],
             ['username', 'filter', 'filter' => 'trim'],
-            ['username','required'],
             ['username', 'unique', 'targetClass' => 'app\models\User', 'message' => 'Username Sudah Digunakan'],
             ['username', 'string', 'min' => 2, 'max' => 255],
-
-            ['email', 'filter', 'filter' => 'trim'],
-            ['email', 'required'],
             ['email', 'email'],
             ['email', 'unique', 'targetClass' => 'app\models\User', 'message' => 'Email Sudah Terdaftar.'],
-            ['username','required'],
             ['level','integer'],
             ['level','in','range'=>[1,2,3,4]],
-            ['password', 'required'],
-            ['password', 'string', 'min' => 6],
+            ['password', 'string', 'min' => 6,'tooShort'=>'Panjang Password Minimal 6 Karakter'],
         ];
     }
 
@@ -59,4 +54,6 @@ class Signup extends Model
 
         return null;
     }
+
+    
 }

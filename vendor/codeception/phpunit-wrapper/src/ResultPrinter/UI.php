@@ -20,7 +20,7 @@ class UI extends \PHPUnit\TextUI\ResultPrinter
         $this->dispatcher = $dispatcher;
     }
 
-    protected function printDefect(\PHPUnit\Framework\TestFailure $defect, $count): void
+    protected function printDefect(\PHPUnit\Framework\TestFailure $defect, int $count): void
     {
         $this->write("\n---------\n");
         $this->dispatcher->dispatch(
@@ -37,7 +37,7 @@ class UI extends \PHPUnit\TextUI\ResultPrinter
         $this->write($defect->getExceptionAsString());
         $this->writeNewLine();
 
-        $stackTrace = \PHPUnit\Util\Filter::getFilteredStacktrace($defect->thrownException(), false);
+        $stackTrace = \PHPUnit\Util\Filter::getFilteredStacktrace($defect->thrownException());
 
         foreach ($stackTrace as $i => $frame) {
             if (!isset($frame['file'])) {
@@ -79,6 +79,11 @@ class UI extends \PHPUnit\TextUI\ResultPrinter
     }
 
     public function addFailure(\PHPUnit\Framework\Test $test, \PHPUnit\Framework\AssertionFailedError $e, float $time) : void
+    {
+        $this->lastTestFailed = true;
+    }
+
+    public function addWarning(\PHPUnit\Framework\Test $test, \PHPUnit\Framework\Warning $e, float $time) : void
     {
         $this->lastTestFailed = true;
     }

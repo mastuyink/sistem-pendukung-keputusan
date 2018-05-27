@@ -1,9 +1,10 @@
 <?php
 use yii\helpers\Html;
-
+use yii\widgets\Pjax;
 $color = ['box-primary','box-danger','box-success','box-warning','box-primary','box-danger','box-success','box-warning'];
 $this->title = "SPK DISPERINDAG"
 ?>
+
 <center><h1>SELAMAT DATANG</h1></center>
 <div class="row">
 <div class="col-md-12">

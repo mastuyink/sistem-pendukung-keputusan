@@ -5,6 +5,7 @@ namespace app\controllers;
 use Yii;
 use app\models\User;
 use app\models\UserSearch;
+use app\models\PasswordReset;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
@@ -36,7 +37,10 @@ class UserController extends Controller
                     [
                         'allow' => true,
                         'matchCallback' => function ($rule, $action) {
-                            return Yii::$app->user->identity->level == 1;
+                            if (!Yii::$app->user->isGuest) {
+                                return Yii::$app->user->identity->level == 1;
+                            }
+                            
                         },
                     ],
                 ],
@@ -66,17 +70,6 @@ class UserController extends Controller
         ]);
     }
 
-    /**
-     * Displays a single User model.
-     * @param integer $id
-     * @return mixed
-     */
-    public function actionView($id)
-    {
-        return $this->render('view', [
-            'model' => $this->findModel($id),
-        ]);
-    }
 
     /**
      * Creates a new User model.
@@ -88,12 +81,32 @@ class UserController extends Controller
         $model = new User();
 
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
-            return $this->redirect(['view', 'id' => $model->id]);
+            return $this->redirect(['index']);
         } else {
             return $this->render('create', [
                 'model' => $model,
             ]);
         }
+    }
+
+
+    public function actionResetPassword($id){
+        
+        $model = new PasswordReset();
+        if ($model->load(Yii::$app->request->post())) {
+            if ($model->resetPassword($id)) {
+                Yii::$app->session->setFlash('success', 'Reset Password Sukses');
+                return $this->redirect(['index']);
+            }else{
+                Yii::$app->session->setFlash('danger', 'Reset Password gagal');
+            }
+            
+        }
+        $findUser = $this->findModel($id);
+        return $this->render('reset-password', [
+                'model' => $model,
+                'user' => $findUser,
+            ]);
     }
 
     /**
@@ -106,8 +119,13 @@ class UserController extends Controller
     {
         $model = $this->findModel($id);
 
-        if ($model->load(Yii::$app->request->post()) && $model->save()) {              
-            return $this->redirect(['index']);
+        if ($model->load(Yii::$app->request->post())) {
+            if ($model->validate()) {
+                $model->save(false);
+                Yii::$app->session->setFlash('success', 'Load SUkses');
+                return $this->redirect(['index']);
+            }           
+            Yii::$app->session->setFlash('warning',var_dump($model->getErrors()));
         } else {
             return $this->render('update', [
                 'model' => $model,
@@ -156,7 +174,7 @@ class UserController extends Controller
         if ($model->load(Yii::$app->getRequest()->post())) {
             if ($user = $model->signup()) {
                 Yii::$app->session->setFlash('success', 'Pendaftaran User Berhasil');
-                return $this->goHome();
+                return $this->redirect(['index']);
             }
         }
 

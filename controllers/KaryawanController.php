@@ -4,6 +4,7 @@ namespace app\controllers;
 
 use Yii;
 use app\models\TKaryawan;
+use app\models\TJabatanKaryawan;
 use app\models\TKaryawanSearch;
 use app\models\TBidang;
 use app\models\TJabatan;
@@ -36,6 +37,33 @@ class KaryawanController extends Controller
                 ],
             ],
         ];
+    }
+
+    public function actionPilihJabatan($id_karyawan){
+
+        if(($cekKaryawan = TKaryawan::find()->where(['id'=>$id_karyawan])->andWhere(['jenis_karyawan'=>TKaryawan::PNS])->one()) !== null){
+            if ($cekKaryawan->idJabatanKaryawan == null) {
+                $jabatanKayawan = new TJabatanKaryawan();
+            }else{
+                $jabatanKayawan = $cekKaryawan->idJabatanKaryawan;
+            }
+                $jabatanKayawan->id_karyawan = $id_karyawan;
+            if ($jabatanKayawan->load(Yii::$app->request->post()) && $jabatanKayawan->validate()) {
+                $jabatanKayawan->save(false);
+
+                Yii::$app->session->setFlash('success','Pilih Jabatan Sukses');
+                return $this->redirect(['index']);
+            }else{
+                $listJabatan     = ArrayHelper::map($this->getAllJabatan(), 'id', 'jabatan');
+                return $this->render('_form-pilih-jabatan',[
+                    'jabatanKayawan'=> $jabatanKayawan,
+                    'listJabatan' => $listJabatan,
+                ]);
+            }
+        }else{
+            
+            throw new \yii\web\HttpException(501,"Karyawan Non PNS Tidak Memiliki Jabatan");
+        }
     }
 
     public function actionDropdownKelurahan($id_kecamatan){
@@ -92,10 +120,16 @@ class KaryawanController extends Controller
     {
         $searchModel = new TKaryawanSearch();
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
-
+        $listKaryawan = TKaryawan::find()->orderBy(['nama'=>SORT_ASC])->all();
+        $listBidang = ArrayHelper::map(TBidang::find()->orderBy(['bidang'=>SORT_ASC])->asArray()->all(), 'id','bidang');
+        $listJabatan = ArrayHelper::map(TJabatan::find()->orderBy(['jabatan'=>SORT_ASC])->asArray()->all(), 'id','jabatan');
+        $listJabatan = ArrayHelper::merge($listJabatan, ['999'=>'Staff']);
         return $this->render('index', [
             'searchModel' => $searchModel,
             'dataProvider' => $dataProvider,
+            'listKaryawan' => $listKaryawan,
+            'listBidang' => $listBidang,
+            'listJabatan' => $listJabatan,
         ]);
     }
 
@@ -126,7 +160,6 @@ class KaryawanController extends Controller
             return $this->redirect(['index']);
         } else {
             $listBidang      = ArrayHelper::map($this->getAllBidang(), 'id', 'bidang');
-            $listJabatan     = ArrayHelper::map($this->getAllJabatan(), 'id', 'jabatan');
             $listTempatLahir = ArrayHelper::map(TKabupaten::ambilKabupaten(), 'id', 'nama');
             $listPendidikan  = ArrayHelper::map($this->getAllPendidikan(), 'id', 'pendidikan_akhir');
             $listJurusan     = ArrayHelper::map(TJurusan::find()->asArray()->all(), 'id', 'jurusan');
@@ -134,7 +167,6 @@ class KaryawanController extends Controller
             return $this->render('create', [
                 'model'           => $model,
                 'listBidang'      => $listBidang,
-                'listJabatan'     => $listJabatan,
                 'listTempatLahir' => $listTempatLahir,
                 'listPendidikan'  => $listPendidikan,
                 'listJurusan'     => $listJurusan,
@@ -174,8 +206,7 @@ class KaryawanController extends Controller
             $model->id_kabupaten = $model->idKelurahan->kecamatan->kabupaten_id;
             $model->id_kecamatan = $model->idKelurahan->kecamatan_id;
             $listBidang      = ArrayHelper::map($this->getAllBidang(), 'id', 'bidang');
-            $listJabatan     = ArrayHelper::map($this->getAllJabatan(), 'id', 'jabatan');
-            $listTempatLahir = ArrayHelper::map($this->getAllTempatLahir(), 'id', 'tempat_lahir');
+            $listTempatLahir = ArrayHelper::map(TKabupaten::ambilKabupaten(), 'id', 'nama');
             $listPendidikan  = ArrayHelper::map($this->getAllPendidikan(), 'id', 'pendidikan_akhir');
             $listJurusan     = ArrayHelper::map(TJurusan::find()->asArray()->all(), 'id', 'jurusan');
 
@@ -187,7 +218,6 @@ class KaryawanController extends Controller
             return $this->render('update', [
                 'model'           => $model,
                 'listBidang'      => $listBidang,
-                'listJabatan'     => $listJabatan,
                 'listTempatLahir' => $listTempatLahir,
                 'listPendidikan'  => $listPendidikan,
                 'listJurusan'     => $listJurusan,

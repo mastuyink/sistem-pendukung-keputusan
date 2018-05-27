@@ -33,7 +33,7 @@ $this->registerJs(
 <?php yii\widgets\Pjax::begin(['id' => 'pjax-form-search']) ?>
     <?php $form = ActiveForm::begin([
         'options' => ['data-pjax' => true ],
-        'action' => [$currentUrl],
+        'action' => ['index'],
         'method' => 'get',
     ]); ?>
 
@@ -71,7 +71,7 @@ $this->registerJs(
             'data-toggle' => 'tooltip',
             'title' => 'Cari'
             ]) ?>
-        <?= Html::a('',[$currentUrl], [
+        <?= Html::a('',['index'], [
                 'class' => 'btn btn-lg btn-flat btn-info fa fa-refresh',
                 'data-toggle'=>'tooltip',
                 'title'=>'Reset Filter',

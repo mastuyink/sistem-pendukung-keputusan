@@ -17,10 +17,26 @@ use yii\widgets\DetailView;
             <th>Nama</th>
             <td><?= $modelKaryawan->nama ?></td>
         </tr>
-        <tr>
-            <th>Jabatan</th>
-            <td><?= $modelKaryawan->idJabatan->jabatan." Bidang : ".$modelKaryawan->idBidang->bidang ?></td>
-        </tr>
+        <?php if($modelKaryawan->jenis_karyawan == $modelKaryawan::PNS):  ?>
+            <tr>
+                <th>Jabatan</th>
+                <td>
+                    <?php 
+                        if (!empty($modelKaryawan->idJabatanKaryawan)) {
+                         echo $modelKaryawan->idJabatanKaryawan->idJabatan->jabatan;
+                        }else{
+                            echo '<span class="badge bg-orange">Jabatan Belum Dipilih</span>';
+                        }
+                    ?>
+                    
+                    Bidang : <?= $modelKaryawan->idBidang->bidang ?></td>
+            </tr>
+        <?php else: ?>
+            <tr>
+                <th>Bidang</th>
+                <td><?= $modelKaryawan->jenis_karyawan; ?> Bidang : <?= $modelKaryawan->idBidang->bidang ?></td>
+            </tr>
+        <?php endif; ?>
         <tr>
             <th>TTL</th>
             <td><?= $modelKaryawan->idTempatLahir->nama.", ".date('d-M-Y',strtotime($modelKaryawan->tanggal_lahir)) ?></td>

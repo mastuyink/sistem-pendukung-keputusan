@@ -228,7 +228,7 @@ class RunCest
         $I->executeCommand('run unit ErrorTest --no-exit');
         $I->seeInShellOutput('There was 1 error');
         $I->seeInShellOutput('Array to string conversion');
-        $I->seeInShellOutput('ErrorTest.php:9');
+        $I->seeInShellOutput('ErrorTest.php');
     }
 
     public function runTestWithException(\CliGuy $I)
@@ -474,7 +474,7 @@ EOF
         $I->executeCommand('run powers PowerUpCest');
         $I->dontSeeInShellOutput('FAILURES');
     }
-    
+
     public function runCestWithTwoFailedTest(CliGuy $I)
     {
         $I->executeCommand('run scenario PartialFailedCest', false);
@@ -483,4 +483,15 @@ EOF
         $I->seeInShellOutput('Tests: 3,');
         $I->seeInShellOutput('Failures: 2.');
     }
+
+
+    public function runWarningTests(CliGuy $I)
+    {
+        $I->executeCommand('run unit WarningTest.php', false);
+        $I->seeInShellOutput('There was 1 warning');
+        $I->seeInShellOutput('WarningTest::testWarningInvalidDataProvider');
+        $I->seeInShellOutput('Tests: 1,');
+        $I->seeInShellOutput('Warnings: 1.');
+    }
+
 }

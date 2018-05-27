@@ -35,9 +35,15 @@ $this->params['breadcrumbs'][] = $this->title;
                 'format' => 'raw',
                 'value' => function($model){
                     $edit = Html::a('', ['update','id'=>$model->id], [
-                        'class' => 'btn btn-sm btn-primary fa fa-pencil',
+                        'class' => 'btn btn-sm btn-info fa fa-pencil',
                         'data-toggle' => 'tooltip',
                         'title' => 'Update',
+                        'id' => 'btn-update-'.$model->id
+                    ]);
+                    $password = Html::a('', ['reset-password','id'=>$model->id], [
+                        'class' => 'btn btn-sm btn-primary fa fa-lock',
+                        'data-toggle' => 'tooltip',
+                        'title' => 'Reset Password',
                         'id' => 'btn-update-'.$model->id
                     ]);
                     $delete = Html::a('', ['delete','id'=>$model->id], [
@@ -50,7 +56,7 @@ $this->params['breadcrumbs'][] = $this->title;
                                 'method'  => 'post',
                         ],
                     ]);
-                    return $edit." ".$delete;
+                    return $edit." ".$password." ".$delete;
                 }
             ]
         ],
