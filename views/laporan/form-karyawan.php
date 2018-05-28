@@ -1,7 +1,8 @@
 <?php 
 use yii\helpers\Html;
 use yii\helpers\Url;
-
+use kartik\widgets\Select2;
+use yii\helpers\ArrayHelper;
 
 $this->title = "Laporan Penilaian Karyawan";
 ?>
@@ -15,20 +16,30 @@ $this->title = "Laporan Penilaian Karyawan";
             
             <div class="box-body" style="">
 				<div class="col-sm-3">
-					<label class="label-control">NIP</label>
-					<?= Html::textInput('nip',null,[
-						'class' => 'form-control input-sm',
-						'id'    => 'form-nip',
-						'placeholder' => 'Masukkan NIP Karyawan'
-						]); ?>
+				 	<label class="control-label">NIP</label>
+					<?= Select2::widget([
+					    'name' => 'nip',
+					    'data' => ArrayHelper::map($listKaryawan, 'nip', 'nip'),
+					    'options' => [
+							'class'       => 'form-control input-sm',
+							'id'          => 'form-nip',
+							'placeholder' => 'Masukkan NIP Karyawan'
+							//'multiple'    => true
+					    ],
+					]); ?>
 				</div>
 				<div class="col-sm-3">
-					<label class="label-control">Nama Karyawan</label>
-					<?= Html::textInput('nama_karyawan',null,[
-						'class' => 'form-control input-sm',
-						'id'    => 'form-karyawan',
-						'placeholder' => 'Masukkan Nama Karyawan'
-						]); ?>
+					<label class="control-label">Nama Karyawan</label>
+					<?= Select2::widget([
+					    'name' => 'nama_karyawan',
+					    'data' => ArrayHelper::map($listKaryawan, 'nama', 'nama'),
+					    'options' => [
+							'class'       => 'form-control input-sm',
+							'id'          => 'form-karyawan',
+							'placeholder' => 'Masukkan Nama Karyawan'
+							//'multiple'    => true
+					    ],
+					]); ?>
 				</div>
 				
 				<div class="form-group col-sm-2">

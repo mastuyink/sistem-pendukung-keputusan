@@ -131,6 +131,9 @@ class LaporanController extends Controller
     }
 
     public function actionKaryawan(){
-        return$this->render('form-karyawan');
+        $listKaryawan = TKaryawan::find()->orderBy(['nama'=>SORT_ASC])->all();
+        return$this->render('form-karyawan',[
+            'listKaryawan' => $listKaryawan
+        ]);
     }
 }

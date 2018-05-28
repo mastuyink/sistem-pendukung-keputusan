@@ -2,10 +2,11 @@
 
 use yii\helpers\Html;
 use yii\helpers\Url;
+use yii\helpers\Json;
 /* @var $this yii\web\View */
 /* @var $searchModel app\models\TLogPenilaianSearch */
 /* @var $dataProvider yii\data\ActiveDataProvider */
-
+app\assets\ChartAsset::register($this);
 ?>
 <?php if($modelPenilaian != null): ?>
     <div class="panel panel-success">
@@ -49,6 +50,7 @@ use yii\helpers\Url;
             </table>
         </div>
     </div>
+
 <div class="panel panel-primary">
     <div class="panel-heading"><h4>Data Nilai</h4></div>
 <div class="panel-body">
@@ -76,7 +78,7 @@ use yii\helpers\Url;
                     <tr>
                         <td><?= $key+1 ?></td>
                         <td><?= $valueNilai->idTahun->tahun ?></td>
-                        <td><?= date('F',strtotime($valueNilai->id_bulan)) ?></td>
+                        <td><?= $valueNilai::ambilNamaBulan($valueNilai->id_bulan) ?></td>
                         <td><?= $valueNilai->total ?></td>
                         <td><?= $valueNilai::ambilRanking($data) ?></td>
                         <td width="25"><?= Html::button('', [
@@ -94,6 +96,90 @@ use yii\helpers\Url;
     </table>
 </div>
 </div>
+
+<!-- CHART START -->
+<?php 
+$nama            = $modelPenilaian[0]->idKaryawan->nama;
+$dataChartArray  = [];
+$bulanChartArray = [];
+
+for ($index=0; $index < 5; $index++) { 
+    if (isset($modelPenilaian[$index])) {
+        array_unshift($dataChartArray, $modelPenilaian[$index]->total);
+        array_unshift($bulanChartArray, $modelPenilaian[$index]::ambilNamaBulan($modelPenilaian[$index]->id_bulan).' '.$modelPenilaian[$index]->idTahun->tahun);
+    }
+}
+
+$dataChartJson = Json::encode($dataChartArray);
+$bulanChartJson = Json::encode($bulanChartArray);
+$customScript = <<< SCRIPT
+  var CHart = Highcharts.chart('chart-container', {
+    chart: {
+        type: 'line'
+    },
+    title: {
+        text: 'Grafik Nilai'
+    },
+    subtitle: {
+        text: '$nama'
+    },
+    xAxis: {
+        categories: $bulanChartJson
+    },
+    yAxis: {
+        title: {
+            text: 'Jumlah Nilai'
+        }
+
+    },
+    legend: {
+        layout: 'vertical',
+        align: 'right',
+        verticalAlign: 'middle'
+    },
+
+    plotOptions: {
+        series: {
+            label: {
+                connectorAllowed: false
+            }
+        }
+    },
+
+    tooltip: {
+        
+        pointFormat: '<span style="color:{point.color}">{point.name}</span><b>{point.y}</b><br/>'
+    },
+
+    series: [
+        {
+            name: 'Nilai',
+            data: $dataChartJson
+        },
+    ],
+
+    responsive: {
+        rules: [{
+            condition: {
+                maxWidth: 500
+            },
+            chartOptions: {
+                legend: {
+                    layout: 'horizontal',
+                    align: 'center',
+                    verticalAlign: 'bottom'
+                }
+            }
+        }]
+    }
+});
+SCRIPT;
+$this->registerJs($customScript, \yii\web\View::POS_READY);
+
+ ?>
+ <center><div class="row" id="chart-container" style="width: 100%;min-width: 900px; height: 400px; margin: 0 auto;">HERE</div></center>
+
+<!-- CHART END -->
 <?php
 $this->registerJs('
 $(".tombol-detail-bulanan").on("click",function(){
