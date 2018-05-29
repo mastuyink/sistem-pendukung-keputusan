@@ -8,7 +8,7 @@ use app\models\TTahunSearch;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
-
+use yii\filters\AccessControl;
 /**
  * TahunController implements the CRUD actions for TTahun model.
  */
@@ -25,6 +25,15 @@ class TahunController extends Controller
                 'actions' => [
                     'delete' => ['POST'],
                 ],
+            ],
+            [
+                'allow' => true,
+                'matchCallback' => function ($rule, $action) {
+                    if (!Yii::$app->user->isGuest) {
+                        return Yii::$app->user->identity->level == 1;
+                    }
+                            
+                },
             ],
         ];
     }

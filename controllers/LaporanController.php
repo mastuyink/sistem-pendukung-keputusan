@@ -38,12 +38,10 @@ class LaporanController extends Controller
                         'allow' => true,
                         'roles' => ['?'],
                     ],
-                    [
-                       // 'actions' => ['index','drop-bulan',''],
+                     [
+                       // 'actions' => ['karyawan','detail-nilai-karyawan'],
                         'allow' => true,
-                        'matchCallback' => function ($rule, $action) {
-                            return Yii::$app->user->identity->level <= 3;
-                        },
+                        'roles' => ['@'],
                     ],
                 ],
             ],

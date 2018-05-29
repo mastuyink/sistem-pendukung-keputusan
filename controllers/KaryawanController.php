@@ -44,14 +44,15 @@ class KaryawanController extends Controller
                         'actions' => ['index','detail-karyawan'],
                         'allow' => true,
                         'matchCallback' => function ($rule, $action) {
-                            return Yii::$app->user->identity->level <= 3;
+                            return Yii::$app->user->isGuest ? false : Yii::$app->user->identity->level == 3;
                         },
                     ],
                     [
-                       // 'actions' => ['index','drop-bulan',''],
+                       // 'actions' => ['create','update','delete'],
                         'allow' => true,
                         'matchCallback' => function ($rule, $action) {
-                            return Yii::$app->user->identity->level < 3;
+
+                            return Yii::$app->user->isGuest ? false : Yii::$app->user->identity->level == 1;
                         },
                     ],
                 ],
@@ -158,12 +159,12 @@ class KaryawanController extends Controller
      * @param integer $id
      * @return mixed
      */
-    public function actionView($id)
-    {
-        return $this->render('view', [
-            'model' => $this->findModel($id),
-        ]);
-    }
+    // public function actionView($id)
+    // {
+    //     return $this->render('view', [
+    //         'model' => $this->findModel($id),
+    //     ]);
+    // }
 
     /**
      * Creates a new TKaryawan model.

@@ -24,7 +24,11 @@ app\assets\ChartAsset::register($this);
                     </tr>
                     <tr>
                         <th width="100">Pend. Akhir</th>
-                        <td> : <?= $modelPenilaian[0]->idKaryawan->idPendidikanAkhir->pendidikan_akhir ?></td>
+                        <td> : <?= $modelPenilaian[0]->idKaryawan->idPendidikanAkhir->pendidikan_akhir ?>
+                            <?php if (isset($modelPenilaian[0]->idKaryawan->idJurusanKaryawan->idJurusan->jurusan)) {
+                                echo $modelPenilaian[0]->idKaryawan->idJurusanKaryawan->idJurusan->jurusan;
+                            } ?>
+                        </td>
                     </tr>
                     <?php if($modelPenilaian[0]->idKaryawan->jenis_karyawan == $modelPenilaian[0]->idKaryawan::PNS):  ?>
                     <tr>

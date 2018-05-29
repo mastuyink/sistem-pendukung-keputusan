@@ -15,7 +15,7 @@ use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
 use yii\helpers\ArrayHelper;
-
+use yii\filters\AccessControl;
 /**
  * PenilaianController implements the CRUD actions for TPenilaian model.
  */
@@ -35,6 +35,35 @@ class PenilaianController extends Controller
                     'cari-kriteria'      => ['POST'],
                     'kunci-nilai'        => ['POST'],
 
+                ],
+            ],
+            'access' => [
+                'class' => AccessControl::className(),
+                'rules' => [
+                    [
+                        'actions' => ['detail-nilai'],
+                        'allow' => true,
+                        'roles' => ['?'],
+                    ],
+                    [
+                       // 'actions' => ['detail-nilai'],
+                        'allow' => true,
+                        'roles' => ['@'],
+                    ],
+                    // [
+                    //    'actions' => ['index','drop-bulan',''],
+                    //     'allow' => true,
+                    //     'matchCallback' => function ($rule, $action) {
+                    //         return Yii::$app->user->identity->level <= 3;
+                    //     },
+                    // ],
+                    // [
+                    //    // 'actions' => ['index','drop-bulan',''],
+                    //     'allow' => true,
+                    //     'matchCallback' => function ($rule, $action) {
+                    //         return Yii::$app->user->isGuest ? false : Yii::$app->user->identity->level < 3;
+                    //     },
+                    // ],
                 ],
             ],
         ];

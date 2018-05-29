@@ -35,17 +35,25 @@ class KriteriaController extends Controller
                     [
                         'actions' => ['index'],
                         'allow' => true,
-                        'matchCallback' => function ($rule, $action) {
-                            return Yii::$app->user->identity->level <= 3;
-                        },
+                        'roles' => ['@'],
                     ],
                     [
-                       // 'actions' => ['index','drop-bulan',''],
+                        'actions' => ['create','update','delete','drop-bulan'],
                         'allow' => true,
                         'matchCallback' => function ($rule, $action) {
-                            return Yii::$app->user->identity->level < 3;
+                            if (!Yii::$app->user->isGuest) {
+                                return Yii::$app->user->identity->level == 1 || Yii::$app->user->identity->level == 2;
+                            }
+                            
                         },
                     ],
+                    // [
+                    //    // 'actions' => ['index','drop-bulan',''],
+                    //     'allow' => true,
+                    //     'matchCallback' => function ($rule, $action) {
+                    //         return Yii::$app->user->identity->level == 1;
+                    //     },
+                    // ],
                 ],
             ],
         ];

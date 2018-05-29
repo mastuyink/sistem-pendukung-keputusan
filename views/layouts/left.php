@@ -89,8 +89,7 @@
             ]
         ) ?>
     <?php elseif(Yii::$app->user->identity->level == 2): ?>
-
-        <!-- MENU KEPALA DINAS -->
+        <!-- MENU KABID -->
         <?= dmstr\widgets\Menu::widget(
             [
                 'options' => ['class' => 'sidebar-menu tree', 'data-widget'=> 'tree'],
@@ -104,8 +103,8 @@
             ]
         ) ?>
     <?php elseif(Yii::$app->user->identity->level == 3): ?>
-
-        <!-- MENU KABID -->
+         <!-- MENU KEPALA DINAS -->
+        
         <?= dmstr\widgets\Menu::widget(
             [
                 'options' => ['class' => 'sidebar-menu tree', 'data-widget'=> 'tree'],
@@ -145,7 +144,6 @@
                 ],
             ]
         ) ?>
-
     <?php endif; ?>
 
     </section>
