@@ -216,7 +216,7 @@ class PenilaianController extends Controller
         $model = new TPenilaian();
         $listBulan = ModelBulan::ambilSemuaBulan();
         $listTahun = ArrayHelper::map(TTahun::find()->asArray()->all(), 'id', 'tahun');
-
+        $model->bobot_saat_ini = 0;
         if ($model->load(Yii::$app->request->post()) && $model->validate()) {
             $model->save(false);
             Yii::$app->session->setFlash('success', 'Tambah Data Penilaian Sukses');

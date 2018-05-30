@@ -28,7 +28,6 @@ class TPenilaian extends \yii\db\ActiveRecord
 {
     public $hasil_akhir;
     public $jumlah_absensi;
-   // public $bobot_saat_ini;
     /**
      * @inheritdoc
      */
@@ -50,34 +49,32 @@ class TPenilaian extends \yii\db\ActiveRecord
             [['id_bulan'],'in','range'=>array_keys(ModelBulan::ambilSemuaBulan())],
             [['id_tahun'], 'exist', 'skipOnError' => true, 'targetClass' => TTahun::className(), 'targetAttribute' => ['id_tahun' => 'id']],
             [['id_kriteria'], 'exist', 'skipOnError' => true, 'targetClass' => TKriteria::className(), 'targetAttribute' => ['id_kriteria' => 'id']],
-           // [['bobot_saat_ini'], 'bobotNilaiValidator'],
-            [['bobot_saat_ini'],'default','value'=>function($attribute, $params){
-                $inputTahunBulan = $this->id_tahun.$this->id_bulan;
-                $kriteria = TKriteria::find()->where(['id'=>$this->id_kriteria])->andWhere(['<=','CONCAT(id_tahun_valid_start,"",id_bulan_valid_start)',$inputTahunBulan])->andWhere(['>=','CONCAT(id_tahun_valid_end,"",id_bulan_valid_end)',$inputTahunBulan])->one();
-                if ($kriteria == null) {
-                    $errorMessage = 'Bobot Nilai Tidak Ditemukan, Silahkan Periksa tanggal valid Bobot Pada Kriteria '.$this->idKriteria->kriteria;
-                    $this->addError('bobot_saat_ini','Error');
-                    Yii::$app->session->setFlash('danger', $errorMessage);
-                    return false;
-                }
-                return $this->idKriteria->bobot;
-           }],
+            
+            ['bobot_saat_ini', 'bobotNilaiValidator'],
             [['nilai'], 'nilaiValidator'],
         ];
     }
 
 
     public function bobotNilaiValidator($attribute, $params){
-        $inputTahunBulan = $this->id_tahun.$this->id_bulan;
-        $kriteria = TKriteria::find()->where(['id'=>$this->id_kriteria])->andWhere(['<=','CONCAT(id_tahun_valid_start,"",id_bulan_valid_start)',$inputTahunBulan])->andWhere(['>=','CONCAT(id_tahun_valid_end,"",id_bulan_valid_end)',$inputTahunBulan])->one();
-        if ($kriteria == null) {
-            $errorMessage = 'Bobot Nilai Tidak Ditemukan, Silahkan Periksa tanggal valid Bobot Pada Kriteria '.$this->idKriteria->kriteria;
-            $this->addError('bobot_saat_ini','Error');
-            Yii::$app->session->setFlash('danger', $errorMessage);
-            return false;
-        }
-        $this->bobot_saat_ini = $kriteria->bobot;
-        return true;
+         $inputTahunBulan = $this->idTahun->tahun.'-'.$this->id_bulan;
+            $kriteria = TKriteria::find()->joinWith(['idTahunValidStart as idTahunValidStart','idTahunValidEnd as idTahunValidEnd'])
+            ->where(['t_kriteria.id'=>$this->id_kriteria])
+            ->andWhere(
+                'STR_TO_DATE(:bulanTahun, "%Y-%m") BETWEEN STR_TO_DATE(CONCAT(idTahunValidStart.tahun,"-",id_bulan_valid_start), "%Y-%m") AND STR_TO_DATE(CONCAT(idTahunValidEnd.tahun,"-",id_bulan_valid_end), "%Y-%m")',
+                [':bulanTahun'=>$inputTahunBulan
+            ])->one();
+            if ($kriteria == null) {
+                    $errorMessage = 'Bobot Nilai Tidak Ditemukan, Silahkan Periksa tanggal valid Bobot Pada Kriteria '.$this->idKriteria->kriteria;
+                    Yii::$app->session->setFlash('danger', $errorMessage);
+                    $this->addError('bobot_saat_ini','Bobot Tidak Ditemukan'); 
+                    return false;
+            }else{
+              //  $this->addError('bobot_saat_ini','Error');
+                $this->bobot_saat_ini = $kriteria->bobot;
+                return true;
+            }
+            
     }
 
 
