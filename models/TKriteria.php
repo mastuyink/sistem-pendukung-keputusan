@@ -95,14 +95,14 @@ class TKriteria extends \yii\db\ActiveRecord
     /**
      * @return \yii\db\ActiveQuery
      */
-    public function getIdTahunValidStart()
+    public function getTahunValidStart()
     {
         return $this->hasOne(TTahun::className(), ['id' => 'id_tahun_valid_start']);
     }
     /**
      * @return \yii\db\ActiveQuery
      */
-    public function getIdTahunValidEnd()
+    public function getTahunValidEnd()
     {
         return $this->hasOne(TTahun::className(), ['id' => 'id_tahun_valid_end']);
     }

@@ -58,7 +58,7 @@ class TPenilaian extends \yii\db\ActiveRecord
 
     public function bobotNilaiValidator($attribute, $params){
          $inputTahunBulan = $this->idTahun->tahun.'-'.$this->id_bulan;
-            $kriteria = TKriteria::find()->joinWith(['idTahunValidStart as idTahunValidStart','idTahunValidEnd as idTahunValidEnd'])
+            $kriteria = TKriteria::find()->joinWith(['TahunValidStart as idTahunValidStart','TahunValidEnd as idTahunValidEnd'])
             ->where(['t_kriteria.id'=>$this->id_kriteria])
             ->andWhere(
                 'STR_TO_DATE(:bulanTahun, "%Y-%m") BETWEEN STR_TO_DATE(CONCAT(idTahunValidStart.tahun,"-",id_bulan_valid_start), "%Y-%m") AND STR_TO_DATE(CONCAT(idTahunValidEnd.tahun,"-",id_bulan_valid_end), "%Y-%m")',
