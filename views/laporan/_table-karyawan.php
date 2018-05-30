@@ -25,7 +25,7 @@ app\assets\ChartAsset::register($this);
                     <tr>
                         <th width="100">Pend. Akhir</th>
                         <td> : <?= $modelPenilaian[0]->idKaryawan->idPendidikanAkhir->pendidikan_akhir ?>
-                            <?php if (isset($modelPenilaian[0]->idKaryawan->idJurusanKaryawan->idJurusan->jurusan)) {
+                            <?php if (isset($modelPenilaian[0]->idKaryawan->idJurusanKaryawan)) {
                                 echo $modelPenilaian[0]->idKaryawan->idJurusanKaryawan->idJurusan->jurusan;
                             } ?>
                         </td>
@@ -107,7 +107,7 @@ $nama            = $modelPenilaian[0]->idKaryawan->nama;
 $dataChartArray  = [];
 $bulanChartArray = [];
 
-for ($index=0; $index < 5; $index++) { 
+for ($index=0; $index < 6; $index++) { 
     if (isset($modelPenilaian[$index])) {
         array_unshift($dataChartArray, $modelPenilaian[$index]->total);
         array_unshift($bulanChartArray, $modelPenilaian[$index]::ambilNamaBulan($modelPenilaian[$index]->id_bulan).' '.$modelPenilaian[$index]->idTahun->tahun);

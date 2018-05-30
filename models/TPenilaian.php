@@ -28,6 +28,7 @@ class TPenilaian extends \yii\db\ActiveRecord
 {
     public $hasil_akhir;
     public $jumlah_absensi;
+   // public $bobot_saat_ini;
     /**
      * @inheritdoc
      */
@@ -49,8 +50,18 @@ class TPenilaian extends \yii\db\ActiveRecord
             [['id_bulan'],'in','range'=>array_keys(ModelBulan::ambilSemuaBulan())],
             [['id_tahun'], 'exist', 'skipOnError' => true, 'targetClass' => TTahun::className(), 'targetAttribute' => ['id_tahun' => 'id']],
             [['id_kriteria'], 'exist', 'skipOnError' => true, 'targetClass' => TKriteria::className(), 'targetAttribute' => ['id_kriteria' => 'id']],
-            // [['nilai'],'float','min'=>0,'max'=>100,'tooSmall'=>'Nilai Tidak Boleh Lebih Kecil dari 0','tooBig'=>'Nilai Tidak Boleh Melebihi 100'],
-            [['bobot_saat_ini'], 'bobotNilaiValidator'],
+           // [['bobot_saat_ini'], 'bobotNilaiValidator'],
+            [['bobot_saat_ini'],'default','value'=>function($attribute, $params){
+                $inputTahunBulan = $this->id_tahun.$this->id_bulan;
+                $kriteria = TKriteria::find()->where(['id'=>$this->id_kriteria])->andWhere(['<=','CONCAT(id_tahun_valid_start,"",id_bulan_valid_start)',$inputTahunBulan])->andWhere(['>=','CONCAT(id_tahun_valid_end,"",id_bulan_valid_end)',$inputTahunBulan])->one();
+                if ($kriteria == null) {
+                    $errorMessage = 'Bobot Nilai Tidak Ditemukan, Silahkan Periksa tanggal valid Bobot Pada Kriteria '.$this->idKriteria->kriteria;
+                    $this->addError('bobot_saat_ini','Error');
+                    Yii::$app->session->setFlash('danger', $errorMessage);
+                    return false;
+                }
+                return $this->idKriteria->bobot;
+           }],
             [['nilai'], 'nilaiValidator'],
         ];
     }
@@ -58,15 +69,15 @@ class TPenilaian extends \yii\db\ActiveRecord
 
     public function bobotNilaiValidator($attribute, $params){
         $inputTahunBulan = $this->id_tahun.$this->id_bulan;
-        $kriteria = TKriteria::find()->where(['id'=>$this->idKriteria])->andWhere(['<','CONCAT(id_tahun_valid_start,\'\',id_bulan_valid_start)',$inputTahunBulan])->andWhere(['>','CONCAT(id_tahun_valid_end,\'\',id_bulan_valid_end)',$inputTahunBulan])->one();
-        if ($kriteria != null) {
-            $this->bobot_saat_ini = $kriteria->bobot;
-        }else{
+        $kriteria = TKriteria::find()->where(['id'=>$this->id_kriteria])->andWhere(['<=','CONCAT(id_tahun_valid_start,"",id_bulan_valid_start)',$inputTahunBulan])->andWhere(['>=','CONCAT(id_tahun_valid_end,"",id_bulan_valid_end)',$inputTahunBulan])->one();
+        if ($kriteria == null) {
             $errorMessage = 'Bobot Nilai Tidak Ditemukan, Silahkan Periksa tanggal valid Bobot Pada Kriteria '.$this->idKriteria->kriteria;
             $this->addError('bobot_saat_ini','Error');
             Yii::$app->session->setFlash('danger', $errorMessage);
             return false;
         }
+        $this->bobot_saat_ini = $kriteria->bobot;
+        return true;
     }
 
 
@@ -139,7 +150,7 @@ class TPenilaian extends \yii\db\ActiveRecord
         $db = Yii::$app->getDb();
 
         //memperbaarui nilai normaslisasi jika ada perubahan nilai atau input nilai baru
-        $db->createCommand('UPDATE t_penilaian set nilai_normalisasi = nilai/'.$nilaiTertinggi['nilaiMax'].' WHERE id_kriteria = '.$this->id_kriteria.' AND id_bulan = '.$this->id_bulan.' AND id_tahun = '.$this->id_tahun.' ')->execute();
+        $db->createCommand('UPDATE t_penilaian SET nilai_normalisasi = nilai/'.$nilaiTertinggi['nilaiMax'].' WHERE id_kriteria = '.$this->id_kriteria.' AND id_bulan = '.$this->id_bulan.' AND id_tahun = '.$this->id_tahun.' ')->execute();
             return true;
     }
 

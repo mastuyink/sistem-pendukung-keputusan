@@ -59,7 +59,7 @@ class TJurusanKaryawan extends \yii\db\ActiveRecord
     /**
      * @return \yii\db\ActiveQuery
      */
-    public function getJurusan()
+    public function getIdJurusan()
     {
         return $this->hasOne(TJurusan::className(), ['id' => 'id_jurusan']);
     }

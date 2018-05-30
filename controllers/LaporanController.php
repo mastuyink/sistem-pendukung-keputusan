@@ -123,7 +123,8 @@ class LaporanController extends Controller
                        <p>Silahkan Periksa Kembali Masukan Anda</p>
                     </div>';
         }else{
-            $modelPenilaian = VHasilAkhir::find()->where(['id_karyawan'=>$modelKaryawan->id])->all();
+            $modelPenilaian = VHasilAkhir::find()->where(['id_karyawan'=>$modelKaryawan->id])
+            ->orderBy(['CONCAT(id_tahun,"",id_bulan)'=>SORT_DESC])->all();
             return $this->renderAjax('_table-karyawan',['modelPenilaian'=>$modelPenilaian]);
         }
     }
