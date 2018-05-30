@@ -89,22 +89,23 @@
             ]
         ) ?>
     <?php elseif(Yii::$app->user->identity->level == 2): ?>
-        <!-- MENU KABID -->
+        
+        <!-- MENU KEPALA DINAS -->
         <?= dmstr\widgets\Menu::widget(
             [
                 'options' => ['class' => 'sidebar-menu tree', 'data-widget'=> 'tree'],
                 'items' => [
                     ['label' => 'Menu Kepala Dinas', 'options' => ['class' => 'header']],
                     
-                    ['label' => 'Data Penilaian', 'icon' => 'circle-o', 'url' => '/laporan/bulanan',],
+                    ['label' => 'Laporan Penilaian', 'icon' => 'circle-o', 'url' => '/laporan/bulanan',],
                     ['label' => 'Kriteria', 'icon' => 'circle-o', 'url' => '/kriteria/index',],
                     
                 ],
             ]
         ) ?>
     <?php elseif(Yii::$app->user->identity->level == 3): ?>
-         <!-- MENU KEPALA DINAS -->
-        
+         
+        <!-- MENU KABID -->
         <?= dmstr\widgets\Menu::widget(
             [
                 'options' => ['class' => 'sidebar-menu tree', 'data-widget'=> 'tree'],
