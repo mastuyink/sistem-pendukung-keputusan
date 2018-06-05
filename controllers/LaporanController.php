@@ -124,7 +124,7 @@ class LaporanController extends Controller
                     </div>';
         }else{
             $modelPenilaian = VHasilAkhir::find()->where(['id_karyawan'=>$modelKaryawan->id])
-            ->orderBy(['CONCAT(id_tahun,"",id_bulan)'=>SORT_DESC])->all();
+             ->orderBy(['id_tahun'=>SORT_DESC,'id_bulan'=>SORT_DESC])->all();
             return $this->renderAjax('_table-karyawan',['modelPenilaian'=>$modelPenilaian]);
         }
     }
