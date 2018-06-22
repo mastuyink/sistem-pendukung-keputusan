@@ -20,7 +20,7 @@ class TKaryawanSearch extends TKaryawan
     {
         return [
             [['id', 'nip', 'id_jk', 'id_tempat_lahir', 'id_bidang', 'id_jabatan', 'id_user'], 'integer'],
-            [['nama', 'tanggal_lahir', 'tanggal_kerja', 'no_telp', 'alamat', 'create_at', 'update_at'], 'safe'],
+            [['nama', 'tanggal_lahir', 'tanggal_kerja', 'no_telp', 'alamat', 'create_at', 'update_at','jenis_karyawan'], 'safe'],
         ];
     }
 
@@ -60,15 +60,16 @@ class TKaryawanSearch extends TKaryawan
 
         // grid filtering conditions
         $query->andFilterWhere([
-            'id_jk' => $this->id_jk,
+            'id_jk'           => $this->id_jk,
             'id_tempat_lahir' => $this->id_tempat_lahir,
-            'tanggal_lahir' => $this->tanggal_lahir,
-            'tanggal_kerja' => $this->tanggal_kerja,
-            'id_bidang' => $this->id_bidang,
-            'id_jabatan' => $this->id_jabatan,
-            'id_user' => $this->id_user,
-            'create_at' => $this->create_at,
-            'update_at' => $this->update_at,
+            'tanggal_lahir'   => $this->tanggal_lahir,
+            'tanggal_kerja'   => $this->tanggal_kerja,
+            'id_bidang'       => $this->id_bidang,
+            'jenis_karyawan'  => $this->jenis_karyawan,
+            'id_jabatan'      => $this->id_jabatan,
+            'id_user'         => $this->id_user,
+            'create_at'       => $this->create_at,
+            'update_at'       => $this->update_at,
         ]);
 
         $query->andFilterWhere(['like', 'nama', $this->nama])

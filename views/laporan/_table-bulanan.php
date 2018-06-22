@@ -9,7 +9,7 @@ use yii\helpers\Url;
 ?>
 <?php if($modelPenilaian != null): ?>
 <div class="panel panel-primary">
-    <div class="panel-heading"><h4>Laporan Bulan <?= date('F',strtotime($modelPenilaian[0]->id_bulan)) ?></h4></div>
+    <div class="panel-heading"><h4>Laporan Bulan <?= $modelPenilaian[0]::ambilNamaBulan($modelPenilaian[0]->id_bulan).' '.$modelPenilaian[0]->idTahun->tahun ?></h4></div>
 <div class="panel-body">
     <div class="col-md-12">
         <?= Html::a(' Download PDF', ['export-laporan-bulanan','id_tahun'=>$modelPenilaian[0]->id_tahun,'id_bulan'=>$modelPenilaian[0]->id_bulan], [

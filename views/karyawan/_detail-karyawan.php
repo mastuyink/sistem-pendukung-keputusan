@@ -51,7 +51,7 @@ use yii\widgets\DetailView;
         </tr>
         <tr>
             <th>Pendidikan</th>
-            <td><?= $modelKaryawan->idPendidikanAkhir->pendidikan_akhir ?> <?= !empty($modelKaryawan->id_pendidikan_akhir > 3) ? $modelKaryawan->idJurusanKaryawan->jurusan->jurusan : " " ?></td>
+            <td><?= $modelKaryawan->idPendidikanAkhir->pendidikan_akhir ?> <?= !empty($modelKaryawan->id_pendidikan_akhir > 3) ? $modelKaryawan->idJurusanKaryawan->idJurusan->jurusan : " " ?></td>
         </tr>
         <tr>
             <th>Alamat</th>

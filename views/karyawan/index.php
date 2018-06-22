@@ -59,7 +59,7 @@ $this->params['breadcrumbs'][] = $this->title;
                 'header'=> 'Nama',
                 'attribute' => 'nama',
                 'filterType'=>GridView::FILTER_SELECT2,
-                'filter'=>ArrayHelper::map($listKaryawan, 'id', 'nama'), 
+                'filter'=>ArrayHelper::map($listKaryawan, 'nama', 'nama'), 
                 'filterWidgetOptions'=>[
                     'pluginOptions'=>['allowClear'=>true],
                       ],
@@ -97,19 +97,19 @@ $this->params['breadcrumbs'][] = $this->title;
                 }
             ],
             [
-                'header'              => 'Jabatan',
+                'header'              => 'Jenis Karyawan',
                 'format'              => 'raw',
-                'attribute'           => 'id_jabatan',
+                'attribute'           => 'jenis_karyawan',
                 'hAlign' => 'center',
                 'filterType'          =>GridView::FILTER_SELECT2,
-                'filter'              =>$listJabatan, 
+                'filter'              =>ArrayHelper::map([['value'=>'THL/STAFF','text'=>'THL/STAFF'],['value'=>'PNS','text'=>'PNS']], 'value', 'text'), 
                 'filterWidgetOptions' =>[
                     'pluginOptions'=>['allowClear'=>true],
                       ],
                 'filterInputOptions'=>['placeholder'=>'Semua...'],
                 'value'=> function($model){
                     if ($model->jenis_karyawan != 'PNS') {
-                        return "STAFF/THL";
+                        return $model->jenis_karyawan;
                     }else{
                         $tombolPilihJabatan = Html::a('', ['/karyawan/pilih-jabatan','id_karyawan'=>$model->id], [
                             'class' => 'bg-navy btn btn-xs btn-flat fa fa-briefcase',
