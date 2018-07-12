@@ -28,7 +28,7 @@ class TJurusan extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['jurusan'], 'required'],
+            [['jurusan'], 'required','message'=>'{attribute} tidak boleh kosong'],
             [['jurusan'], 'string', 'max' => 100],
         ];
     }

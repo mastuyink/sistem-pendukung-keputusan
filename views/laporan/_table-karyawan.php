@@ -56,7 +56,32 @@ app\assets\ChartAsset::register($this);
     </div>
 
 <div class="panel panel-primary">
-    <div class="panel-heading"><h4>Data Nilai</h4></div>
+    <div class="panel-heading">
+        <div class="row">
+        <div class="col-xs-9"><h4>Data Nilai</h4></div>
+        <div class="col-xs-3">
+        <?= Html::dropDownList('tahun', $postData['tahun'], $listTahun, [
+            'class' => 'form-control',
+            'onchange' => '
+                $("#loading-ajax").html("<img src=\'/img/spinner.svg\'>");
+                    $.ajax({
+                        url: "/laporan/detail-nilai-karyawan",
+                        type: "POST",
+                        data: {
+                            nip: '.$postData['nip'].',
+                            nama: "'.$postData['nama'].'",
+                            tahun: $(this).val(),
+                        },
+                        success: function(data){
+                            $("#ajax-reload").html(data);
+                            $("#loading-ajax").html("");
+                        }
+                    });
+            '
+        ]); ?>
+        </div>
+        </div>
+    </div>
 <div class="panel-body">
    <table class="table table-striped table-hover table-responsive">
             <thead>

@@ -28,7 +28,7 @@ class TJabatan extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['jabatan'], 'required'],
+            [['jabatan'], 'required','message'=>'{attribute} tidak boleh kosong'],
             [['id'], 'integer'],
             [['jabatan'], 'string', 'max' => 50],
         ];

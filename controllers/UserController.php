@@ -6,6 +6,8 @@ use Yii;
 use app\models\User;
 use app\models\UserSearch;
 use app\models\PasswordReset;
+use app\models\LupaPassword;
+use app\models\AturUlangPassword;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
@@ -24,8 +26,9 @@ class UserController extends Controller
             'access' => [
                 'class' => AccessControl::className(),
                 'rules' => [
+
                     [
-                        'actions' => ['login'],
+                        'actions' => ['login','lupa-password','atur-ulang-password'],
                         'allow' => true,
                         'roles' => ['?'],
                     ],
@@ -55,6 +58,51 @@ class UserController extends Controller
         ];
     }
 
+    public function actionLupaPassword()
+    {
+        $model = new LupaPassword();
+        if ($model->load(Yii::$app->request->post()) && $model->validate()) {
+            if (($user = $model->getResetToken()) !== false) {
+                //return var_dump($user);
+                Yii::$app->mailer->compose()
+                ->setFrom(Yii::$app->params['adminEmail'])
+                ->setTo($user->email)
+                ->setSubject('Atur Ulang Password '.$user->username)
+                ->setHtmlBody($this->renderPartial('/user/lupa-password-email',[
+                    'user' => $user,
+                    ]))
+                ->send();
+                Yii::$app->session->setFlash('success', 'Silahkan Periksa Email anda untuk mengatur ulang password');
+
+                return $this->goHome();
+            } else {
+                Yii::$app->session->setFlash('error', 'Mohon maaf, sistenm tidak dapat memproses akun untuk email anda');
+            }
+        }
+
+        return $this->render('lupa-password', [
+            'model' => $model,
+        ]);
+    }
+
+    public function actionAturUlangPassword($token)
+    {
+        try {
+            $model = new AturUlangPassword($token);
+        } catch (InvalidParamException $e) {
+            throw new BadRequestHttpException($e->getMessage());
+        }
+
+        if ($model->load(Yii::$app->request->post()) && $model->validate() && $model->resetPassword()) {
+            Yii::$app->session->setFlash('success', 'New password saved.');
+
+            return $this->goHome();
+        }
+
+        return $this->render('reset-password', [
+            'model' => $model,
+        ]);
+    }
     /**
      * Lists all User models.
      * @return mixed

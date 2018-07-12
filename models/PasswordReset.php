@@ -19,7 +19,7 @@ class PasswordReset extends Model
     public function rules()
     {
         return [
-            [['password','confirmPassword'],'required'],
+            [['password','confirmPassword'],'required','message'=>'{attribute} tidak boleh kosong'],
             ['password', 'string', 'min' => 6,'tooShort'=>'Panjang Password Minimal 6 Karakter'],
             [['confirmPassword'], 'compare', 'compareAttribute' => 'password','message'=>'Password Harus Sama'],
         ];

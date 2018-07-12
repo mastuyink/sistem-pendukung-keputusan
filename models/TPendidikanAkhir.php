@@ -28,7 +28,7 @@ class TPendidikanAkhir extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['pendidikan_akhir'], 'required'],
+            [['pendidikan_akhir'], 'required','message'=>'{attribute} tidak boleh kosong'],
             [['pendidikan_akhir'], 'string', 'max' => 100],
         ];
     }

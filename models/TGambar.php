@@ -31,7 +31,7 @@ class TGambar extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['nama_gambar'], 'string'],
+            [['nama_gambar'], 'string','message'=>'{attribute} tidak boleh kosong'],
             [['datetime'], 'safe'],
             [['caption'], 'string', 'max' => 100],
             [['imageFile'], 'file', 'skipOnEmpty' => false, 'extensions' => 'png, jpg, jpeg'],

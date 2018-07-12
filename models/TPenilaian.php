@@ -42,21 +42,21 @@ class TPenilaian extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['id_karyawan', 'id_kriteria', 'id_bulan', 'id_tahun', 'nilai'], 'required'],
-            [['id_karyawan', 'id_kriteria', 'id_bulan', 'id_tahun', 'bobot_saat_ini'], 'integer'],
+            [['id_karyawan', 'id_bulan', 'id_tahun'], 'required','message'=>'{attribute} tidak boleh kosong'],
+            [['id_karyawan', 'id_kriteria', 'id_bulan', 'id_tahun', 'bobot_saat_ini'], 'integer','message'=>'{attribute} hanya boleh angka'],
             [['create_at', 'update_at','nilai_normalisasi'], 'safe'],
             [['id_karyawan'], 'exist', 'skipOnError' => true, 'targetClass' => TKaryawan::className(), 'targetAttribute' => ['id_karyawan' => 'id']],
             [['id_bulan'],'in','range'=>array_keys(ModelBulan::ambilSemuaBulan())],
             [['id_tahun'], 'exist', 'skipOnError' => true, 'targetClass' => TTahun::className(), 'targetAttribute' => ['id_tahun' => 'id']],
             [['id_kriteria'], 'exist', 'skipOnError' => true, 'targetClass' => TKriteria::className(), 'targetAttribute' => ['id_kriteria' => 'id']],
             
-            ['bobot_saat_ini', 'bobotNilaiValidator'],
-            [['nilai'], 'nilaiValidator'],
+            // ['bobot_saat_ini', 'bobotNilaiValidator'],
+            //[['nilai'], 'nilaiValidator'],
         ];
     }
 
 
-    public function bobotNilaiValidator($attribute, $params){
+    public function cariBobotNilai(){
          $inputTahunBulan = $this->idTahun->tahun.'-'.$this->id_bulan;
             $kriteria = TKriteria::find()->joinWith(['tahunValidStart as idTahunValidStart','tahunValidEnd as idTahunValidEnd'])
             ->where(['t_kriteria.id'=>$this->id_kriteria])
@@ -68,26 +68,26 @@ class TPenilaian extends \yii\db\ActiveRecord
                     $errorMessage = 'Bobot Nilai Tidak Ditemukan, Silahkan Periksa tanggal valid Bobot Pada Kriteria '.$this->idKriteria->kriteria;
                     Yii::$app->session->setFlash('danger', $errorMessage);
                     $this->addError('bobot_saat_ini','Bobot Tidak Ditemukan'); 
-                    return false;
+                    return NULL;
             }else{
               //  $this->addError('bobot_saat_ini','Error');
-                $this->bobot_saat_ini = $kriteria->bobot;
-                return true;
+                //$this->bobot_saat_ini = $kriteria->bobot;
+                return $kriteria->bobot;
             }
             
     }
 
 
-    public function nilaiValidator($attribute, $params){
-        $nilaiDiinput = explode(".", $this->nilai);
-        if ($nilaiDiinput[0] > 100) {
-             $this->addError('nilai','Nilai Tidak Boleh Melebihi 100');
-            //return false;
-        }else{
-            return true;
-        }
+    // public function nilaiValidator($attribute, $params){
+    //     $nilaiDiinput = explode(".", $this->nilai);
+    //     if ($nilaiDiinput[0] > 100) {
+    //          $this->addError('nilai','Nilai Tidak Boleh Melebihi 100');
+    //          return false;
+    //     }else{
+    //         return true;
+    //     }
        
-    }
+    // }
 
     /**
      * @inheritdoc
@@ -102,7 +102,7 @@ class TPenilaian extends \yii\db\ActiveRecord
             'id_tahun' => 'Tahun',
             'nilai' => 'Nilai',
             'bobot_saat_ini' => 'Bobot Saat Ini',
-            'bobot_saat_ini' => 'Nilai Dinormalisasi',
+            'nilai_normalisasi' => 'Nilai Dinormalisasi',
             'create_at' => 'Create At',
             'update_at' => 'Update At',
         ];

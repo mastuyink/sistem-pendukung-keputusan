@@ -42,16 +42,10 @@ $model->id_tahun = date('Y')
         'allowClear' => false
     ],
     ]); ?>
-    <?= $form->field($model, 'id_kriteria')->radioList([], [
-        'id' => 'tpenilaian-id_kriteria',])->label('Kriteria Penilaian'); ?>
-    <div>
-        <?= $form->field($model, 'nilai')->widget(MaskedInput::className(), [
-        'mask'               => ['999','9.99','99.99'],
-        'clientOptions'      => [
-        'removeMaskOnSubmit' => false,
-        ]
-        ])?>
+    <div class="row" id="div-kriteria">
+        
     </div>
+    <br>
     <div class="form-group ">
         <?= Html::submitButton('Simpan' , ['class' => 'btn btn-success btn-block btn-flat']) ?>
     </div>
@@ -120,9 +114,10 @@ function cariKriteria(vbulan, vtahun, vkaryawan){
             $.ajax({
                 url: "'.Url::to(['cari-kriteria']).'",
                 type: "POST",
+                timeout: 100000,
                 data: {id_karyawan: vkaryawan, bulan: vbulan, tahun: vtahun},
                 success: function(data){
-                    $("#tpenilaian-id_kriteria").html(data);
+                    $("#div-kriteria").html(data);
                 }
             });
         }

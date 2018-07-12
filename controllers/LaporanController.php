@@ -123,9 +123,32 @@ class LaporanController extends Controller
                        <p>Silahkan Periksa Kembali Masukan Anda</p>
                     </div>';
         }else{
-            $modelPenilaian = VHasilAkhir::find()->where(['id_karyawan'=>$modelKaryawan->id])
+            $tahunPost = Yii::$app->request->post('tahun', date('Y'));
+            $tahun = TTahun::find()->where(['tahun'=>$tahunPost])->one();
+            $modelPenilaian = VHasilAkhir::find()
+                ->where(['id_karyawan'=>$modelKaryawan->id])
+                ->andWhere(['id_tahun'=>$tahun->id])
              ->orderBy(['id_tahun'=>SORT_DESC,'id_bulan'=>SORT_DESC])->all();
-            return $this->renderAjax('_table-karyawan',['modelPenilaian'=>$modelPenilaian]);
+            if ($modelPenilaian != null) {
+                $postData = [
+                    'nip' => $data['nip'],
+                    'nama' => $data['nama'],
+                    'tahun' => $tahunPost,
+                ];
+                $listTahun = ArrayHelper::map(TTahun::find()->orderBy(['id'=>SORT_ASC])->all(), 'tahun', 'tahun');
+                return $this->renderAjax('_table-karyawan',[
+                    'modelPenilaian'=>$modelPenilaian,
+                    'postData' => $postData,
+                    'listTahun' => $listTahun,
+
+                ]);
+            }else{
+                 return '<div class="callout callout-danger">
+                      <h4>Data Nilai Tidak Ditemukan...</h4>
+                       <p>Silahkan Periksa Kembali Masukan Anda</p>
+                    </div>';
+            }
+            
         }
     }
 

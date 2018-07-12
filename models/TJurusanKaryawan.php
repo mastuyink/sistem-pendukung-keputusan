@@ -29,7 +29,7 @@ class TJurusanKaryawan extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['id_karyawan', 'id_jurusan'], 'required'],
+            [['id_karyawan', 'id_jurusan'], 'required','message'=>'{attribute} tidak boleh kosong'],
             [['id_karyawan', 'id_jurusan'], 'integer'],
             [['id_karyawan'], 'unique'],
             [['id_karyawan'], 'exist', 'skipOnError' => true, 'targetClass' => TKaryawan::className(), 'targetAttribute' => ['id_karyawan' => 'id']],

@@ -61,9 +61,8 @@ $fieldOptions2 = [
                 in using Google+</a>
         </div>
       /.social-auth-links -->
-
-       <!--  <a href="#">I forgot my password</a><br>
-        <a href="register.html" class="text-center">Register a new membership</a> --> 
+        <?= Html::a('Lupa Password ?', ['/user/lupa-password']); ?>
+        
 
     </div>
     <!-- /.login-box-body -->

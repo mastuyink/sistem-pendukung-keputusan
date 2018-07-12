@@ -52,9 +52,9 @@ class TKaryawan extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['nip', 'nama', 'id_jk', 'id_tempat_lahir', 'tanggal_lahir', 'tanggal_kerja', 'id_bidang', 'no_telp', 'alamat','id_pendidikan_akhir','id_kelurahan','jenis_karyawan'], 'required'],
+            [['nip', 'nama', 'id_jk', 'id_tempat_lahir', 'tanggal_lahir', 'tanggal_kerja', 'id_bidang', 'no_telp', 'alamat','id_pendidikan_akhir','id_kelurahan','jenis_karyawan'], 'required','message'=>'{attribute} tidak boleh kosong'],
             [['tanggal_lahir','tanggal_kerja'],'date', 'format'=>'php:Y-m-d'],
-            [['nip', 'id_jk', 'id_tempat_lahir', 'id_bidang', 'id_user','jurusan'], 'integer'],
+            [['nip', 'id_jk', 'id_tempat_lahir', 'id_bidang', 'id_user','jurusan'], 'integer','message'=>'{attribute} hanya angka'],
             [['tanggal_lahir', 'tanggal_kerja', 'create_at', 'update_at'], 'safe'],
             [['nama'], 'string', 'max' => 50],
             [['no_telp'], 'string', 'max' => 15],
@@ -75,7 +75,7 @@ class TKaryawan extends \yii\db\ActiveRecord
             return $model->id_pendidikan_akhir > 3;
             }, 'whenClient' => "function (attribute, value) {
             return $('#form-jurusan-akhir').val() > 3;
-            }"],
+            }",'message'=>'{attribute} tidak boleh kosong'],
             // [['id_jabatan','tanggal_menjabat'],'required','when'=>function($model){
             //     return $model->jenis_karyawan == self::PNS;
             // },'whenClient'=>"function (attribute, value) {

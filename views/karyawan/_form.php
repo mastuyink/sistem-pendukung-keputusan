@@ -60,6 +60,19 @@ if ($model->isNewRecord) {
         'id' => 'form-jurusan-akhir'
         ]); ?>
     </div>
+    <div id="div-jurusan" class="col-md-12"> 
+      <?= $form->field($model, 'jurusan')->widget(Select2::classname(), [
+      'data' => $listJurusan,
+      'options' => [
+          'placeholder' => 'Pilih Jurursan...',
+
+      ],
+      'pluginOptions' => [
+          'allowClear' => false
+      ],
+      ]);
+       ?>
+    </div>
     <div class="col-md-12">
       <?= $form->field($model, 'id_provinsi')->widget(Select2::classname(), [
       'data' => $listProvinsi,
@@ -128,19 +141,6 @@ if ($model->isNewRecord) {
 </div>
     <div class="col-md-12">
       <?= $form->field($model, 'id_bidang')->dropDownList($listBidang, ['prompt' => 'Pilih Bidang ...']); ?>
-    </div>
-    <div id="div-jurusan" class="col-md-12"> 
-      <?= $form->field($model, 'jurusan')->widget(Select2::classname(), [
-      'data' => $listJurusan,
-      'options' => [
-          'placeholder' => 'Pilih Jurursan...',
-
-      ],
-      'pluginOptions' => [
-          'allowClear' => false
-      ],
-      ]);
-       ?>
     </div>
     <div class="col-md-12">
       <?= $form->field($model, 'id_kabupaten')->widget(Select2::classname(), [

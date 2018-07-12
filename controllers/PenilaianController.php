@@ -11,6 +11,7 @@ use app\models\TKriteria;
 use app\models\ModelBulan;
 use app\models\TTahun;
 use app\models\VHasilAkhir;
+use app\models\KriteriaPenilaianValidator;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
@@ -124,7 +125,6 @@ class PenilaianController extends Controller
         $tahun         = $data['tahun'];
         $idKaryawan    = $data['id_karyawan'];
         $karyawan      = TKaryawan::find()->where(['id'=>$idKaryawan])->asArray()->one();
-        $listKaryawan  = TKaryawan::find()->asArray()->all();
         $listPenilaian = TPenilaian::find()->joinWith(['idKaryawan','idKriteria'])->where(
                 [
                     'AND',
@@ -132,21 +132,29 @@ class PenilaianController extends Controller
                     ['=','id_tahun',$tahun],
                 ]
             )->andWhere(['id_karyawan' => $karyawan['id']])
-            ->asArray()
             ->all();
              $kriteria[] = "AND";
 
         foreach ($listPenilaian as $key => $value) {
-            $kriteria[] = ['!=','id',$value['id_kriteria']]; 
+            $kriteria[] = ['!=','t_kriteria.id',$value['id_kriteria']]; 
         }
-        $jumlahKriteria = TKriteria::find()->where($kriteria)->orderBy(['kriteria'=>SORT_ASC])->asArray()->all();
-        foreach ($jumlahKriteria as $key => $valKriteria) {
-            // if ($valKriteria['id'] == 1) {
-            //     echo '<label><input name="TPenilaian[id_kriteria]" value="'.$valKriteria['id'].'" type="radio">'.$valKriteria['kriteria'].'</label><br>';
-            // }else{
-                echo '<label><input name="TPenilaian[id_kriteria]" value="'.$valKriteria['id'].'" type="radio" class="radio-kriteria-penilaian">'.$valKriteria['kriteria'].'</label><br>';
-          //  }
-        }
+        $tahun = TTahun::findOne($tahun);
+        $inputTahunBulan = $tahun->tahun.'-'.$bulan;
+        $jumlahKriteria = TKriteria::find()
+        ->joinWith(['tahunValidStart as idTahunValidStart','tahunValidEnd as idTahunValidEnd'])
+        ->where($kriteria)
+        ->andWhere(
+                'STR_TO_DATE(:bulanTahun, "%Y-%m") BETWEEN STR_TO_DATE(CONCAT(idTahunValidStart.tahun,"-",id_bulan_valid_start), "%Y-%m") AND STR_TO_DATE(CONCAT(idTahunValidEnd.tahun,"-",id_bulan_valid_end), "%Y-%m")',
+                [':bulanTahun'=>$inputTahunBulan
+        ])->orderBy(['kriteria'=>SORT_ASC])->asArray()->all();
+        // foreach ($jumlahKriteria as $key => $valKriteria) {
+        //         echo '<label><input name="TPenilaian[id_kriteria]" value="'.$valKriteria['id'].'" type="radio" class="radio-kriteria-penilaian">'.$valKriteria['kriteria'].'</label><br>';
+        // }
+        $modelKriteriaPenilaian = [new KriteriaPenilaianValidator()];
+        return $this->renderAjax('_form-kriteria-penilaian',[
+            'jumlahKriteria'         => $jumlahKriteria,
+            'modelKriteriaPenilaian' => $modelKriteriaPenilaian,
+        ]);
         
         
     }
@@ -195,18 +203,6 @@ class PenilaianController extends Controller
 
 
     /**
-     * Displays a single TPenilaian model.
-     * @param integer $id
-     * @return mixed
-     */
-    public function actionView($id)
-    {
-        return $this->render('view', [
-            'model' => $this->findModel($id),
-        ]);
-    }
-
-    /**
      * Creates a new TPenilaian model.
      * If creation is successful, the browser will be redirected to the 'view' page.
      * @return mixed
@@ -218,16 +214,45 @@ class PenilaianController extends Controller
         $listTahun = ArrayHelper::map(TTahun::find()->asArray()->all(), 'id', 'tahun');
         $model->bobot_saat_ini = 0;
         if ($model->load(Yii::$app->request->post()) && $model->validate()) {
-            $model->save(false);
-            Yii::$app->session->setFlash('success', 'Tambah Data Penilaian Sukses');
-            return $this->redirect(['index']);
-        } else {
+            $transaction = Yii::$app->db->beginTransaction();
+            try {
+                $listNilai = Yii::$app->request->post('nilai');
+                //return var_dump($listNilai);
+                foreach ($listNilai as $id_kriteria => $nilai) {
+                    if ($nilai > 0 && $nilai <= 100) {
+                        $newPenilaian = new TPenilaian();
+                        $newPenilaian->load(Yii::$app->request->post());
+                        $newPenilaian->id_kriteria = $id_kriteria;
+                        if(($bobot = $newPenilaian->cariBobotNilai()) !== NULL){
+                            $newPenilaian->bobot_saat_ini = $bobot;
+                            $newPenilaian->nilai = $nilai;
+                            $newPenilaian->save(false);
+                            $valid = true;
+                        }else{
+                            $valid = false;
+                        }
+                    }
+                }
+                if ($valid) {
+                    $transaction->commit();
+                    Yii::$app->session->setFlash('success', 'Tambah Data Penilaian Sukses');
+                    return $this->redirect(['index']);
+                }else{
+                    Yii::$app->session->setFlash('danger', 'Input Tidak Valid, Mohon Periksa Kembali');
+                }
+                
+            } catch(\Exception $e) {
+                $transaction->rollBack();
+                throw $e;
+            }
+            
+            
+        }
             return $this->render('create', [
                 'model'     => $model,
                 'listBulan' => $listBulan,
                 'listTahun' => $listTahun,
             ]);
-        }
     }
 
     /**

@@ -8,7 +8,7 @@ $customScript = <<< SCRIPT
 SCRIPT;
 $this->registerJs($customScript, \yii\web\View::POS_READY);
 
-if (Yii::$app->controller->action->id === 'login') { 
+if (Yii::$app->controller->action->id === 'login' || Yii::$app->controller->action->id === 'lupa-password' || Yii::$app->controller->action->id === 'atur-ulang-password') { 
 /**
  * Do not use this code in your template. Remove it. 
  * Instead, use the code  $this->layout = '//main-login'; in your controller.

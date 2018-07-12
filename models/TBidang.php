@@ -28,7 +28,7 @@ class TBidang extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['bidang'], 'required'],
+            [['bidang'], 'required','message'=>'{attribute} tidak boleh kosong'],
             [['bidang'], 'string', 'max' => 50],
         ];
     }

@@ -41,8 +41,8 @@ class TKriteria extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['kriteria', 'bobot', 'id_bulan_valid_start', 'id_tahun_valid_start', 'id_bulan_valid_end', 'id_tahun_valid_end', 'description'], 'required'],
-            [['id_bulan_valid_start', 'id_tahun_valid_start', 'id_bulan_valid_end', 'id_tahun_valid_end'], 'integer'],
+            [['kriteria', 'bobot', 'id_bulan_valid_start', 'id_tahun_valid_start', 'id_bulan_valid_end', 'id_tahun_valid_end', 'description'], 'required','message'=>'{attribute} tidak boleh kosong'],
+            [['id_bulan_valid_start', 'id_tahun_valid_start', 'id_bulan_valid_end', 'id_tahun_valid_end'], 'integer','message'=>'{attribute} hanya boleh angka'],
             [['description'], 'string'],
             [['create_at', 'update_at'], 'safe'],
             [['kriteria'], 'string', 'max' => 25],

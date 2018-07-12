@@ -41,18 +41,15 @@ class KaryawanController extends Controller
                 'class' => AccessControl::className(),
                 'rules' => [
                     [
-                        'actions' => ['index','detail-karyawan'],
-                        'allow' => true,
-                        'matchCallback' => function ($rule, $action) {
-                            return Yii::$app->user->isGuest ? false : Yii::$app->user->identity->level == 3;
-                        },
-                    ],
-                    [
                        // 'actions' => ['create','update','delete'],
                         'allow' => true,
                         'matchCallback' => function ($rule, $action) {
-
-                            return Yii::$app->user->isGuest ? false : Yii::$app->user->identity->level == 1;
+                            if (!Yii::$app->user->isGuest) {
+                                if (Yii::$app->user->identity->level == 1 || Yii::$app->user->identity->level == 3) {
+                                    return true;
+                                }
+                            }
+                            return false;
                         },
                     ],
                 ],

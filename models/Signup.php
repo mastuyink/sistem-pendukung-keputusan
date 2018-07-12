@@ -14,6 +14,7 @@ class Signup extends Model
     public $email;
     public $password;
     public $level;
+    public $retypePassword;
 
     /**
      * @inheritdoc
@@ -21,7 +22,7 @@ class Signup extends Model
     public function rules()
     {
         return [
-            [['username','email','password','level'],'required'],
+            [['username','email','password','level','retypePassword'],'required','message'=>'{attribute} tidak boleh kosong'],
             ['username', 'filter', 'filter' => 'trim'],
             ['username', 'unique', 'targetClass' => 'app\models\User', 'message' => 'Username Sudah Digunakan'],
             ['username', 'string', 'min' => 2, 'max' => 255],
@@ -30,6 +31,7 @@ class Signup extends Model
             ['level','integer'],
             ['level','in','range'=>[1,2,3,4]],
             ['password', 'string', 'min' => 6,'tooShort'=>'Panjang Password Minimal 6 Karakter'],
+            [['retypePassword'], 'compare', 'compareAttribute' => 'password','message'=>'Password harus Sama'],
         ];
     }
 

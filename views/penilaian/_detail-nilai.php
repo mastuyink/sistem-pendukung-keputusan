@@ -22,6 +22,7 @@ use yii\helpers\Html;
 					<th>No</th>
 					<th>Kriteria</th>
 					<th>Nilai Asli</th>
+					<th>Bobot</th>
 					<th>Nilai Terbobotkan</th>
 				</tr>
 			</thead>
@@ -32,6 +33,7 @@ use yii\helpers\Html;
 							<td width="25"><?= $key+1 ?></td>
 							<td><?= $dataNilai[$key]->idKriteria->kriteria ?></td>
 							<td><?= $dataNilai[$key]->nilai ?></td>
+							<td><?= $dataNilai[$key]->bobot_saat_ini ?></td>
 							<td><?= $dataNilai[$key]->nilai_normalisasi*$dataNilai[$key]->bobot_saat_ini ?></td>
 						</tr>
 						<?php 
@@ -50,6 +52,7 @@ use yii\helpers\Html;
 				<tr>
 					<th style="text-align: center;" colspan="2">TOTAL (Hasil Akhir)</th>
 					<th><?= array_sum($nilai) ?></th>
+					<th></th>
 					<th><?= array_sum($nilai_normalisasi) ?></th>
 
 				</tr>
