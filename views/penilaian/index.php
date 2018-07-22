@@ -157,7 +157,7 @@ echo Dialog::widget([
                       ],
                 'filterInputOptions'=>['placeholder'=>'Semua...'],
                 'value'=> function($model){
-                    return $model->idKriteria->kriteria;
+                    return $model->idPeriodeKriteria->idKriteria->kriteria;
                 }
             ],
             [
@@ -175,7 +175,7 @@ echo Dialog::widget([
                 'filterInputOptions'=>['placeholder'=>'...','class'=>'form-control form-number-only'],
                 'width'=> '75px',
                 'value'=> function($model){
-                    return $model->bobot_saat_ini;
+                    return $model->idPeriodeKriteria->bobot;
                 }
             ],
             [

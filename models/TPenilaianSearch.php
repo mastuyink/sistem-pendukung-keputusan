@@ -18,7 +18,7 @@ class TPenilaianSearch extends TPenilaian
     public function rules()
     {
         return [
-            [['id', 'id_karyawan', 'id_kriteria', 'id_bulan', 'id_tahun', 'bobot_saat_ini'], 'integer'],
+            [['id', 'id_karyawan', 'id_periode_kriteria', 'id_bulan', 'id_tahun'], 'integer'],
             [['nilai'], 'number'],
             [['create_at', 'update_at'], 'safe'],
         ];
@@ -53,7 +53,7 @@ class TPenilaianSearch extends TPenilaian
                     'id_tahun'    => SORT_DESC,
                     'id_bulan'    => SORT_ASC,
                     'id_karyawan' => SORT_ASC,
-                    'id_kriteria' => SORT_ASC
+                    'id_periode_kriteria' => SORT_ASC
                 ]
             ]
         ]);
@@ -70,11 +70,10 @@ class TPenilaianSearch extends TPenilaian
         $query->andFilterWhere([
             'id' => $this->id,
             'id_karyawan' => $this->id_karyawan,
-            'id_kriteria' => $this->id_kriteria,
+            'id_periode_kriteria' => $this->id_periode_kriteria,
             'id_bulan' => $this->id_bulan,
             'id_tahun' => $this->id_tahun,
             'nilai' => $this->nilai,
-            'bobot_saat_ini' => $this->bobot_saat_ini,
             'create_at' => $this->create_at,
             'update_at' => $this->update_at,
         ]);

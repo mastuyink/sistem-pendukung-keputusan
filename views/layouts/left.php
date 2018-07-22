@@ -66,6 +66,7 @@
                         'items' => [
                             ['label' => 'Penilaian', 'icon' => 'circle-o', 'url' => '/penilaian/index',],
                             ['label' => 'Hasil Akhir', 'icon' => 'circle-o', 'url' => '/penilaian/hasil-akhir',],
+                            ['label' => 'Periode Kriteria', 'icon' => 'circle-o', 'url' => '/periode-kriteria/index',],
                             ['label' => 'Kriteria', 'icon' => 'circle-o', 'url' => '/kriteria/index',],
                             
                         ],

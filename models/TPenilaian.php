@@ -9,7 +9,7 @@ use Yii;
  *
  * @property integer $id
  * @property integer $id_karyawan
- * @property integer $id_kriteria
+ * @property integer $id_periode_kriteria
  * @property integer $id_bulan
  * @property integer $id_tahun
  * @property double $nilai
@@ -43,14 +43,13 @@ class TPenilaian extends \yii\db\ActiveRecord
     {
         return [
             [['id_karyawan', 'id_bulan', 'id_tahun'], 'required','message'=>'{attribute} tidak boleh kosong'],
-            [['id_karyawan', 'id_kriteria', 'id_bulan', 'id_tahun', 'bobot_saat_ini'], 'integer','message'=>'{attribute} hanya boleh angka'],
+            [['id_karyawan', 'id_periode_kriteria', 'id_bulan', 'id_tahun'], 'integer','message'=>'{attribute} hanya boleh angka'],
             [['create_at', 'update_at','nilai_normalisasi'], 'safe'],
             [['id_karyawan'], 'exist', 'skipOnError' => true, 'targetClass' => TKaryawan::className(), 'targetAttribute' => ['id_karyawan' => 'id']],
             [['id_bulan'],'in','range'=>array_keys(ModelBulan::ambilSemuaBulan())],
             [['id_tahun'], 'exist', 'skipOnError' => true, 'targetClass' => TTahun::className(), 'targetAttribute' => ['id_tahun' => 'id']],
-            [['id_kriteria'], 'exist', 'skipOnError' => true, 'targetClass' => TKriteria::className(), 'targetAttribute' => ['id_kriteria' => 'id']],
-            
-            // ['bobot_saat_ini', 'bobotNilaiValidator'],
+            [['id_periode_kriteria'], 'exist', 'skipOnError' => true, 'targetClass' => TKriteria::className(), 'targetAttribute' => ['id_periode_kriteria' => 'id']],
+        
             //[['nilai'], 'nilaiValidator'],
         ];
     }
@@ -59,7 +58,7 @@ class TPenilaian extends \yii\db\ActiveRecord
     public function cariBobotNilai(){
          $inputTahunBulan = $this->idTahun->tahun.'-'.$this->id_bulan;
             $kriteria = TKriteria::find()->joinWith(['tahunValidStart as idTahunValidStart','tahunValidEnd as idTahunValidEnd'])
-            ->where(['t_kriteria.id'=>$this->id_kriteria])
+            ->where(['t_kriteria.id'=>$this->id_periode_kriteria])
             ->andWhere(
                 'STR_TO_DATE(:bulanTahun, "%Y-%m") BETWEEN STR_TO_DATE(CONCAT(idTahunValidStart.tahun,"-",id_bulan_valid_start), "%Y-%m") AND STR_TO_DATE(CONCAT(idTahunValidEnd.tahun,"-",id_bulan_valid_end), "%Y-%m")',
                 [':bulanTahun'=>$inputTahunBulan
@@ -97,7 +96,7 @@ class TPenilaian extends \yii\db\ActiveRecord
         return [
             'id' => 'ID',
             'id_karyawan' => 'Karyawan',
-            'id_kriteria' => 'Kritreria',
+            'id_periode_kriteria' => 'Kritreria',
             'id_bulan' => 'Bulan',
             'id_tahun' => 'Tahun',
             'nilai' => 'Nilai',
@@ -128,9 +127,9 @@ class TPenilaian extends \yii\db\ActiveRecord
     /**
      * @return \yii\db\ActiveQuery
      */
-    public function getIdKriteria()
+    public function getIdPeriodeKriteria()
     {
-        return $this->hasOne(TKriteria::className(), ['id' => 'id_kriteria']);
+        return $this->hasOne(TPeriodeKriteria::className(), ['id' => 'id_periode_kriteria']);
     }
 
     public static function ambilNamaBulan($bulan){
@@ -142,12 +141,12 @@ class TPenilaian extends \yii\db\ActiveRecord
         $nilaiTertinggi = TPenilaian::find()->select('MAX(nilai) AS nilaiMax')
                           ->where(['id_tahun'=>$this->id_tahun])
                           ->andWhere(['id_bulan'=>$this->id_bulan])
-                          ->andWhere(['id_kriteria'=>$this->id_kriteria])
+                          ->andWhere(['id_periode_kriteria'=>$this->id_periode_kriteria])
                           ->asArray()->one();
         $db = Yii::$app->getDb();
 
         //memperbaarui nilai normaslisasi jika ada perubahan nilai atau input nilai baru
-        $db->createCommand('UPDATE t_penilaian SET nilai_normalisasi = nilai/'.$nilaiTertinggi['nilaiMax'].' WHERE id_kriteria = '.$this->id_kriteria.' AND id_bulan = '.$this->id_bulan.' AND id_tahun = '.$this->id_tahun.' ')->execute();
+        $db->createCommand('UPDATE t_penilaian SET nilai_normalisasi = nilai/'.$nilaiTertinggi['nilaiMax'].' WHERE id_periode_kriteria = '.$this->id_periode_kriteria.' AND id_bulan = '.$this->id_bulan.' AND id_tahun = '.$this->id_tahun.' ')->execute();
             return true;
     }
 
@@ -156,8 +155,8 @@ class TPenilaian extends \yii\db\ActiveRecord
         ->select('t_penilaian.*, MAX(nilai) AS nilaiMax')
         ->where(['id_tahun'=>$id_tahun])
         ->andWhere(['id_bulan'=>$id_bulan])
-        ->orderBy(['id_kriteria'=>SORT_ASC])
-        ->groupBy(['id_kriteria'])
+        ->orderBy(['id_periode_kriteria'=>SORT_ASC])
+        ->groupBy(['id_periode_kriteria'])
         ->asArray()
         ->all();
     }
@@ -166,17 +165,17 @@ class TPenilaian extends \yii\db\ActiveRecord
         return self::find()->where(['id'=>$id])->one();
     }
 
-    public static function ambilNilai($id_karyawan,$id_kriteria,$id_tahun,$id_bulan,$all = false){
+    public static function ambilNilai($id_karyawan,$id_periode_kriteria,$id_tahun,$id_bulan,$all = false){
         $model = self::find()->joinWith(['idKaryawan','idKriteria','idTahun'])->where(
                 [
                     'AND',
                     ['=','id_karyawan',$id_karyawan],
-                    ['=','id_kriteria',$id_kriteria],
+                    ['=','id_periode_kriteria',$id_periode_kriteria],
                     ['=','id_tahun',$id_tahun],
                     ['=','id_bulan',$id_bulan]
                 ]
             )->asArray()
-            ->orderBy(['id_kriteria'=>SORT_ASC]);
+            ->orderBy(['id_periode_kriteria'=>SORT_ASC]);
         if ($all == false) {
             $result = $model->one();
         }else{

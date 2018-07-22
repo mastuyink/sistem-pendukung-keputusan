@@ -18,8 +18,7 @@ class TKriteriaSearch extends TKriteria
     public function rules()
     {
         return [
-            [['id', 'bobot'], 'integer'],
-            [['kriteria', 'id_bulan_valid_start', 'id_tahun_valid_start', 'id_bulan_valid_end', 'id_tahun_valid_end', 'description', 'create_at', 'update_at'], 'safe'],
+            [['kriteria', 'description', 'create_at'], 'safe'],
         ];
     }
 
@@ -56,21 +55,7 @@ class TKriteriaSearch extends TKriteria
             // $query->where('0=1');
             return $dataProvider;
         }
-
-        // grid filtering conditions
-        $query->andFilterWhere([
-            'id'                   => $this->id,
-            'bobot'                => $this->bobot,
-            'id_bulan_valid_start' => $this->id_bulan_valid_start,
-            'id_tahun_valid_start' => $this->id_tahun_valid_start,
-            'id_bulan_valid_end'   => $this->id_bulan_valid_end,
-            'id_tahun_valid_end'   => $this->id_tahun_valid_end,
-            'create_at'            => $this->create_at,
-            'update_at'            => $this->update_at,
-        ]);
-
-        $query->andFilterWhere(['like', 'kriteria', $this->kriteria])
-            ->andFilterWhere(['like', 'description', $this->description]);
+        $query->andFilterWhere(['like', 'kriteria', $this->kriteria]);
 
         return $dataProvider;
     }

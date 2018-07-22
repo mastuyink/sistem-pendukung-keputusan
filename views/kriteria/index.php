@@ -25,14 +25,6 @@ $this->params['breadcrumbs'][] = $this->title;
             ['class' => 'yii\grid\SerialColumn'],
 
             'kriteria',
-            'bobot',
-            [
-                'header'=> 'Valid',
-                'format'=> 'raw',
-                'value' => function($model){
-                    return $model::ambilNamaBulan($model->id_bulan_valid_start)." ".$model->tahunValidStart->tahun." -> ".$model::ambilNamaBulan($model->id_bulan_valid_end)." ".$model->tahunValidEnd->tahun;
-                }
-            ],
             // 'description:ntext',
             // 'create_at',
             // 'update_at',

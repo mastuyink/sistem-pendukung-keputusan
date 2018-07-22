@@ -1,11 +1,13 @@
 <?php 
 use yii\helpers\Html;
+//use yii\widgets\MaskedInput;
+//app\assets\AppAsset::register($this)
 ?>
 	<?php foreach ($jumlahKriteria as $index => $value): ?>
 		<div class="col-md-2">
-			<?php $idKriteria = $value['id'] ?>
-			<label class="label-control"><?= $value['kriteria'] ?></label>
-			<?= Html::textInput("nilai[$idKriteria]", $value = null, ['class' => 'form-control form-nilai']); ?>
+			<?php $idPeriodeKriteria = $value['id'] ?>
+			<label class="label-control"><?= $value['idKriteria']['kriteria'] ?></label>
+			<?= Html::textInput("nilai[$idPeriodeKriteria]", $value = null, ['class' => 'form-control form-nilai']); ?>
 		</div>
 	<?php endforeach; ?>
 <?php

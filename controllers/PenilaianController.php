@@ -8,6 +8,7 @@ use app\models\TPenilaianSearch;
 use app\models\HasilAkhirSearch;
 use app\models\TKaryawan;
 use app\models\TKriteria;
+use app\models\TPeriodeKriteria;
 use app\models\ModelBulan;
 use app\models\TTahun;
 use app\models\VHasilAkhir;
@@ -33,7 +34,7 @@ class PenilaianController extends Controller
                 'actions' => [
                     'delete'             => ['POST'],
                     'cari-data-karyawan' => ['POST'],
-                    'cari-kriteria'      => ['POST'],
+                   // 'cari-kriteria'      => ['POST'],
                     'kunci-nilai'        => ['POST'],
 
                 ],
@@ -74,15 +75,15 @@ class PenilaianController extends Controller
     public function actionDetailNilai(){
 
         $data = Yii::$app->request->post();
-        $jumlahNilaiBulanIni = TPenilaian::find()->where(['id_bulan' => $data['id_bulan']])->andWhere(['id_tahun' => $data['id_tahun']])->orderBy(['id_kriteria'=>SORT_ASC])->groupBy('id_kriteria')->all();
-        $dataNilai = TPenilaian::find()->joinWith(['idKaryawan','idTahun','idKriteria'])->where(
+        $jumlahNilaiBulanIni = TPenilaian::find()->where(['id_bulan' => $data['id_bulan']])->andWhere(['id_tahun' => $data['id_tahun']])->orderBy(['id_periode_kriteria'=>SORT_ASC])->groupBy('id_periode_kriteria')->all();
+        $dataNilai = TPenilaian::find()->joinWith(['idKaryawan','idTahun'])->where(
             [
                 'AND',
                 ['=','id_karyawan',$data['id_karyawan']],
                 ['=','id_tahun',$data['id_tahun']],
                 ['=','id_bulan',$data['id_bulan']]
             ])
-            ->orderBy(['id_kriteria'=>SORT_ASC])
+            ->orderBy(['id_periode_kriteria'=>SORT_ASC])
             ->all();
 
         return $this->renderAjax('_detail-nilai',[
@@ -125,7 +126,7 @@ class PenilaianController extends Controller
         $tahun         = $data['tahun'];
         $idKaryawan    = $data['id_karyawan'];
         $karyawan      = TKaryawan::find()->where(['id'=>$idKaryawan])->asArray()->one();
-        $listPenilaian = TPenilaian::find()->joinWith(['idKaryawan','idKriteria'])->where(
+        $listPenilaian = TPenilaian::find()->joinWith(['idKaryawan','idPeriodeKriteria'])->where(
                 [
                     'AND',
                     ['=','id_bulan',$bulan],
@@ -136,17 +137,17 @@ class PenilaianController extends Controller
              $kriteria[] = "AND";
 
         foreach ($listPenilaian as $key => $value) {
-            $kriteria[] = ['!=','t_kriteria.id',$value['id_kriteria']]; 
+            $kriteria[] = ['!=','t_periode_kriteria.id',$value['id_periode_kriteria']]; 
         }
         $tahun = TTahun::findOne($tahun);
         $inputTahunBulan = $tahun->tahun.'-'.$bulan;
-        $jumlahKriteria = TKriteria::find()
-        ->joinWith(['tahunValidStart as idTahunValidStart','tahunValidEnd as idTahunValidEnd'])
+        $jumlahKriteria = TPeriodeKriteria::find()
+        ->joinWith(['tahunValidStart as idTahunValidStart','tahunValidEnd as idTahunValidEnd','idKriteria'])
         ->where($kriteria)
         ->andWhere(
                 'STR_TO_DATE(:bulanTahun, "%Y-%m") BETWEEN STR_TO_DATE(CONCAT(idTahunValidStart.tahun,"-",id_bulan_valid_start), "%Y-%m") AND STR_TO_DATE(CONCAT(idTahunValidEnd.tahun,"-",id_bulan_valid_end), "%Y-%m")',
                 [':bulanTahun'=>$inputTahunBulan
-        ])->orderBy(['kriteria'=>SORT_ASC])->asArray()->all();
+        ])->orderBy(['t_kriteria.kriteria'=>SORT_ASC])->asArray()->all();
         // foreach ($jumlahKriteria as $key => $valKriteria) {
         //         echo '<label><input name="TPenilaian[id_kriteria]" value="'.$valKriteria['id'].'" type="radio" class="radio-kriteria-penilaian">'.$valKriteria['kriteria'].'</label><br>';
         // }
@@ -212,38 +213,28 @@ class PenilaianController extends Controller
         $model = new TPenilaian();
         $listBulan = ModelBulan::ambilSemuaBulan();
         $listTahun = ArrayHelper::map(TTahun::find()->asArray()->all(), 'id', 'tahun');
-        $model->bobot_saat_ini = 0;
         if ($model->load(Yii::$app->request->post()) && $model->validate()) {
             $transaction = Yii::$app->db->beginTransaction();
             try {
                 $listNilai = Yii::$app->request->post('nilai');
                 //return var_dump($listNilai);
                 foreach ($listNilai as $id_kriteria => $nilai) {
-                    if ($nilai > 0 && $nilai <= 100) {
-                        $newPenilaian = new TPenilaian();
+                    if ($nilai != NULL && $nilai >= 0 && $nilai <= 100) {
+                        $newPenilaian                      = new TPenilaian();
                         $newPenilaian->load(Yii::$app->request->post());
-                        $newPenilaian->id_kriteria = $id_kriteria;
-                        if(($bobot = $newPenilaian->cariBobotNilai()) !== NULL){
-                            $newPenilaian->bobot_saat_ini = $bobot;
-                            $newPenilaian->nilai = $nilai;
-                            $newPenilaian->save(false);
-                            $valid = true;
-                        }else{
-                            $valid = false;
-                        }
+                        $newPenilaian->id_periode_kriteria = $id_kriteria;
+                        $newPenilaian->nilai               = $nilai;
+                        $newPenilaian->save(false);
                     }
                 }
-                if ($valid) {
                     $transaction->commit();
                     Yii::$app->session->setFlash('success', 'Tambah Data Penilaian Sukses');
                     return $this->redirect(['index']);
-                }else{
-                    Yii::$app->session->setFlash('danger', 'Input Tidak Valid, Mohon Periksa Kembali');
-                }
                 
             } catch(\Exception $e) {
                 $transaction->rollBack();
                 throw $e;
+                Yii::$app->session->setFlash('danger', 'Input Tidak Valid, Mohon Periksa Kembali');
             }
             
             

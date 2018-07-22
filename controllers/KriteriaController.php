@@ -5,8 +5,6 @@ namespace app\controllers;
 use Yii;
 use app\models\TKriteria;
 use app\models\TKriteriaSearch;
-use app\models\TTahun;
-use app\models\ModelBulan;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
@@ -95,20 +93,14 @@ class KriteriaController extends Controller
     {
         $model = new TKriteria();
         if ($model->load(Yii::$app->request->post())) {
-            $bobotTerinput = TKriteria::ambilSemuaBobot();
-            $model->total_bobot = $bobotTerinput+$model->bobot;
             if ($model->validate()) {
                 Yii::$app->session->setFlash('success', 'Data Kriteria Tersimpan');
                 $model->save(false);
                 return $this->redirect(['index']);
             }
-        } 
-            $listTahun = ArrayHelper::map(TTahun::ambilSemuaTahun(), 'id', 'tahun');
-            $listBulan = ModelBulan::ambilSemuaBulan();
+        }
             return $this->render('create', [
                 'model'     => $model,
-                'listTahun' => $listTahun,
-                'listBulan' => $listBulan
             ]);
         
     }
@@ -122,33 +114,16 @@ class KriteriaController extends Controller
     public function actionUpdate($id)
     {
         $model = $this->findModel($id);
-        $listTahun = ArrayHelper::map(TTahun::ambilSemuaTahun(), 'id', 'tahun');
-        $listBulan = ModelBulan::ambilSemuaBulan();
-        if ($model->load(Yii::$app->request->post())) {
-            $transaction = Yii::$app->db->beginTransaction();
-            try {
-                $model->save(false);
-                $bobotTerinput = TKriteria::ambilSemuaBobot($model->id);
-                $model->total_bobot = $bobotTerinput+$model->bobot;
-                if ($model->validate()) {
-                    Yii::$app->session->setFlash('success', 'Kriteria '.$model->kriteria.' Berhasil Diperbaharui');
-                    $model->save(false);
-                    $transaction->commit();
-                    return $this->redirect(['index']);
-                }else{
-                    $transaction->rollBack();
-                }
-                
-            } catch(\Exception $e) {
-                $transaction->rollBack();
-                throw $e;
-            }
+        if ($model->load(Yii::$app->request->post()) && $model->validate()) {
+            $model->save(false);
+            Yii::$app->session->setFlash('success', 'Kriteria '.$model->kriteria.' Berhasil Diperbaharui');
+            $model->save(false);
+            $transaction->commit();
+            return $this->redirect(['index']);
             
         } 
             return $this->render('update', [
                 'model' => $model,
-                'listTahun' => $listTahun,
-                'listBulan' => $listBulan
             ]);
     }
 

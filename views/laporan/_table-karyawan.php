@@ -58,7 +58,13 @@ app\assets\ChartAsset::register($this);
 <div class="panel panel-primary">
     <div class="panel-heading">
         <div class="row">
-        <div class="col-xs-9"><h4>Data Nilai</h4></div>
+        <div class="col-xs-7"><h4>Data Nilai</h4></div>
+        <div class="col-xs-2">
+            <?= Html::a('<i class="fa fa-download"></i> Download', ['download-laporan-karyawan','id_karyawan'=>$modelPenilaian[0]->idKaryawan->id], [
+                'class' => 'btn btn-sm btn-danger',
+                'title' => 'Download Laporan'
+            ]); ?>
+        </div>
         <div class="col-xs-3">
         <?= Html::dropDownList('tahun', $postData['tahun'], $listTahun, [
             'class' => 'form-control',

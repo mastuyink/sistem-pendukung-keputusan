@@ -31,19 +31,19 @@ use yii\helpers\Html;
 					<?php if(isset($dataNilai[$key])): ?>
 						<tr>
 							<td width="25"><?= $key+1 ?></td>
-							<td><?= $dataNilai[$key]->idKriteria->kriteria ?></td>
+							<td><?= $dataNilai[$key]->idPeriodeKriteria->idKriteria->kriteria ?></td>
 							<td><?= $dataNilai[$key]->nilai ?></td>
-							<td><?= $dataNilai[$key]->bobot_saat_ini ?></td>
-							<td><?= $dataNilai[$key]->nilai_normalisasi*$dataNilai[$key]->bobot_saat_ini ?></td>
+							<td><?= $dataNilai[$key]->idPeriodeKriteria->bobot ?></td>
+							<td><?= $dataNilai[$key]->nilai_normalisasi*$dataNilai[$key]->idPeriodeKriteria->bobot ?></td>
 						</tr>
 						<?php 
 						$nilai[] = $dataNilai[$key]->nilai; 
-						$nilai_normalisasi[] = $dataNilai[$key]->nilai_normalisasi*$dataNilai[$key]->bobot_saat_ini; 
+						$nilai_normalisasi[] = $dataNilai[$key]->nilai_normalisasi*$dataNilai[$key]->idPeriodeKriteria->bobot; 
 						?>
 					<?php else: ?>
 						<tr class="bg-danger">
 							<td width="25"><?= $key+1 ?></td>
-							<td><?= $val->idKriteria->kriteria ?></td>
+							<td><?= $val->idPeriodeKriteria->idKriteria->kriteria ?></td>
 							<td>Nilai Belum Diinput</td>
 							<td>-</td>
 						</tr>

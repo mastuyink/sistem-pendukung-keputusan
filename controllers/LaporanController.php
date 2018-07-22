@@ -34,7 +34,7 @@ class LaporanController extends Controller
                 'class' => AccessControl::className(),
                 'rules' => [
                     [
-                        'actions' => ['karyawan','detail-nilai-karyawan'],
+                        'actions' => ['karyawan','detail-nilai-karyawan','download-laporan-karyawan'],
                         'allow' => true,
                         'roles' => ['?'],
                     ],
@@ -48,6 +48,46 @@ class LaporanController extends Controller
         ];
     }
 
+    public function actionDownloadLaporanKaryawan($id_karyawan){
+        $modelHasilAkhir = $modelPenilaian = VHasilAkhir::find()
+            ->where(['id_karyawan'=>$id_karyawan])
+            ->orderBy(['id_tahun'=>SORT_DESC,'id_bulan'=>SORT_DESC])->all();
+        if(!empty($modelHasilAkhir)){
+            $Pdf = new Pdf([
+                 'filename'=>'Laporan Karyawan.pdf',
+                    // A4 paper format
+                    'format' => Pdf::FORMAT_A4, 
+                    // portrait orientation
+                    'orientation' => "L",
+                    // simpan file
+                    'destination' => Pdf::DEST_DOWNLOAD,
+
+                    'content' => "
+                        ".$this->renderPartial('_laporan-karyawan',[
+                            'modelHasilAkhir' => $modelHasilAkhir
+                            ])." ",
+                                     // any css to be embedded if required
+                                'cssInline' => '.kv-heading-1{
+                                                    font-size:18px
+                                                }
+                                                @media print{
+                                                    .page-break{display: block;page-break-before: always;}
+                                                }', 
+                                //set mPDF properties on the fly
+                                'options'   => ['title' => 'Laporan Bulanan '],
+                                // call mPDF methods on the fly
+                                'methods'   => [ 
+                                'SetHeader' =>['Lapran Karyawan'], 
+                                'SetFooter' =>[
+                                    'Laporan Karyawan'],
+                                ]
+                        ]);
+            $Pdf->render();
+        }else{
+            Yii::$app->session->setFlash('danger', 'Data Tidak Ditemukan.. Silahkan Coba Lagi');
+            return $this->redirect(['karyawan']);
+        }
+    }
 
     public function actionExportLaporanBulanan($id_tahun,$id_bulan){
         if(($modelHasilAkhir = VHasilAkhir::find()->where(['id_bulan'=>$id_bulan])->andWhere(['id_tahun'=>$id_tahun])->all()) !== null){
@@ -70,9 +110,7 @@ class LaporanController extends Controller
                                                 }
                                                 @media print{
                                                     .page-break{display: block;page-break-before: always;}
-                                                }
-                                                '
-                                                , 
+                                                }', 
                                 //set mPDF properties on the fly
                                 'options'   => ['title' => 'Laporan Bulanan '],
                                 // call mPDF methods on the fly
@@ -128,7 +166,7 @@ class LaporanController extends Controller
             $modelPenilaian = VHasilAkhir::find()
                 ->where(['id_karyawan'=>$modelKaryawan->id])
                 ->andWhere(['id_tahun'=>$tahun->id])
-             ->orderBy(['id_tahun'=>SORT_DESC,'id_bulan'=>SORT_DESC])->all();
+             ->orderBy(['id_tahun'=>SORT_DESC,'id_bulan'=>SORT_ASC])->all();
             if ($modelPenilaian != null) {
                 $postData = [
                     'nip' => $data['nip'],
