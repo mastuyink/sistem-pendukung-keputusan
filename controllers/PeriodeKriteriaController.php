@@ -68,8 +68,8 @@ class PeriodeKriteriaController extends Controller
     public function actionCreate($tahunBulanStart = null,$tahunBulanEnd = null)
     {
         $model = new TPeriodeKriteria();
-        $periode = Yii::$app->request->get();
-        if ($model->load(Yii::$app->request->post()) && isset($periode['tahunBulanStart']) && isset($periode['tahunBulanEnd']) ) {
+       // $periode = Yii::$app->request->get();
+        if ($model->load(Yii::$app->request->post())) {
             $transaction = Yii::$app->db->beginTransaction();
             try {
                 if ($model->validasiPeriode()) {
