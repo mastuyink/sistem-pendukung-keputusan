@@ -161,6 +161,7 @@ class TPeriodeKriteria extends \yii\db\ActiveRecord
         if ($kriteriaDiinput == NULL) {
             return true;
         }else{
+            $this->addError('periode_kriteria','Periode Kriteria Sudah tersedia, Silahkan periksa kembali');
             return false;
         }
     }

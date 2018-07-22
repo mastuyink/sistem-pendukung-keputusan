@@ -68,11 +68,11 @@ class PeriodeKriteriaController extends Controller
     public function actionCreate($tahunBulanStart = null,$tahunBulanEnd = null)
     {
         $model = new TPeriodeKriteria();
-        if ($model->load(Yii::$app->request->post()) && $tahunBulanStart != NULL && $tahunBulanEnd != NULL) {
+        $periode = Yii::$app->request->get();
+        if ($model->load(Yii::$app->request->post()) && isset($periode['tahunBulanStart']) && isset($periode['tahunBulanEnd']) ) {
             $transaction = Yii::$app->db->beginTransaction();
             try {
                 if ($model->validasiPeriode()) {
-                     return "range valid";
                     if ($model->validate()) {
                     
                         foreach ($model->listKriteria as $id_kriteria => $valKriteria) {
@@ -90,21 +90,17 @@ class PeriodeKriteriaController extends Controller
                                 $newModel->id_tahun_valid_end   = $model->id_tahun_valid_end;
                                 $newModel->id_kriteria          = $id_kriteria;
                                 $newModel->bobot                = $model->bobot[$id_kriteria];
-                                //$newModel->save(false);
+                                $newModel->save(false);
                                 $bobotDiinput[] = $model->bobot[$id_kriteria];
                             }
                         }
                         $model->total_bobot = array_sum($bobotDiinput);
                         if (isset($bobotDiinput) && $model->validate()) {
                             Yii::$app->session->setFlash('success', 'Penambahan Sukses');
-                          //  $transaction->commit();
+                            $transaction->commit();
                             return $this->redirect(['index']); 
                         }
                     }
-                }else{
-                    // return "range Invalid";
-                    // Yii::$app->session->setFlash('danger', 'Periode Invalid');
-                    $model->addError('periode_kriteria','Periode Kriteria Sudah tersedia, Silahkan periksa kembali');
                 }
                
             } catch(\Exception $e) {
