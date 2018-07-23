@@ -51,7 +51,7 @@ $model->id_tahun = date('Y')
             <?php $idPeriodeKriteria = $value['id'] ?>
             <label class="label-control"><?= $value['idKriteria']['kriteria'] ?></label>
             <?= MaskedInput::widget([
-                'name' => "nilai[$index]",
+                'name' => "nilai[$idPeriodeKriteria]",
                 'mask' => ['999','9','9.99','99','99.9','99.99'],
                 'options'=>[
                     'id'=>'form-masked-'.$index,
