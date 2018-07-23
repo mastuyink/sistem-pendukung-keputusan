@@ -98,7 +98,12 @@ class PenilaianController extends Controller
         $data = Yii::$app->request->post();
         $bulan = $data['bulan'];
         $tahun = $data['tahun'];
-        $jumlahKriteria = TKriteria::find()->asArray()->all();
+        $cariTahun = TTahun::findOne($tahun);
+        $jumlahKriteria = TPeriodeKriteria::find()
+            ->joinWith(['tahunValidStart as idTahunValidStart','tahunValidEnd as idTahunValidEnd'])
+            ->where('STR_TO_DATE(:bulanTahun, "%Y-%m") BETWEEN STR_TO_DATE(CONCAT(idTahunValidStart.tahun,"-",id_bulan_valid_start), "%Y-%m") AND STR_TO_DATE(CONCAT(idTahunValidEnd.tahun,"-",id_bulan_valid_end), "%Y-%m")',
+                [':bulanTahun'=>$cariTahun->tahun.'-'.$bulan
+        ])->all();
         $listKaryawan = TKaryawan::find()->asArray()->all();
         foreach ($listKaryawan as $key => $value) {
             $listPenilaian = TPenilaian::find()->where(
@@ -115,7 +120,7 @@ class PenilaianController extends Controller
                 }
             if (count($listPenilaian) < count($jumlahKriteria)) {
                 
-               echo '<option value="'.$value['id'].'">'.$value['nama'].'</option>'; 
+                echo '<option value="'.$value['id'].'">'.$value['nama'].'</option>'; 
             }
         }
     }
@@ -239,10 +244,43 @@ class PenilaianController extends Controller
             
             
         }
+
+        if (Yii::$app->request->isPjax) {
+            $data = Yii::$app->request->post();
+            $bulan         = $data['bulan'];
+            $tahun         = $data['tahun'];
+            $idKaryawan    = $data['id_karyawan'];
+            $karyawan      = TKaryawan::find()->where(['id'=>$idKaryawan])->asArray()->one();
+            $listPenilaian = TPenilaian::find()->joinWith(['idKaryawan','idPeriodeKriteria'])->where(
+                    [
+                        'AND',
+                        ['=','id_bulan',$bulan],
+                        ['=','id_tahun',$tahun],
+                    ]
+                )->andWhere(['id_karyawan' => $karyawan['id']])
+                ->all();
+                 $kriteria[] = "AND";
+
+            foreach ($listPenilaian as $key => $value) {
+                $kriteria[] = ['!=','t_periode_kriteria.id',$value['id_periode_kriteria']]; 
+            }
+            $tahun = TTahun::findOne($tahun);
+            $inputTahunBulan = $tahun->tahun.'-'.$bulan;
+            $jumlahKriteria = TPeriodeKriteria::find()
+            ->joinWith(['tahunValidStart as idTahunValidStart','tahunValidEnd as idTahunValidEnd','idKriteria'])
+            ->where($kriteria)
+            ->andWhere(
+                    'STR_TO_DATE(:bulanTahun, "%Y-%m") BETWEEN STR_TO_DATE(CONCAT(idTahunValidStart.tahun,"-",id_bulan_valid_start), "%Y-%m") AND STR_TO_DATE(CONCAT(idTahunValidEnd.tahun,"-",id_bulan_valid_end), "%Y-%m")',
+                    [':bulanTahun'=>$inputTahunBulan
+            ])->orderBy(['t_kriteria.kriteria'=>SORT_ASC])->asArray()->all();
+            $modelKriteriaPenilaian = [new KriteriaPenilaianValidator()];
+        }
             return $this->render('create', [
-                'model'     => $model,
-                'listBulan' => $listBulan,
-                'listTahun' => $listTahun,
+                'model'                  => $model,
+                'listBulan'              => $listBulan,
+                'listTahun'              => $listTahun,
+                'jumlahKriteria'         => isset($jumlahKriteria) ? $jumlahKriteria : [],
+                'modelKriteriaPenilaian' => isset($modelKriteriaPenilaian) ? $modelKriteriaPenilaian : [],
             ]);
     }
 

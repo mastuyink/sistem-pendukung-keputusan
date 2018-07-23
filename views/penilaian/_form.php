@@ -3,6 +3,7 @@
 use yii\helpers\Html;
 use yii\helpers\Url;
 use yii\widgets\ActiveForm;
+use yii\widgets\Pjax;
 use kartik\select2\Select2;
 use yii\widgets\MaskedInput;
 
@@ -42,9 +43,22 @@ $model->id_tahun = date('Y')
         'allowClear' => false
     ],
     ]); ?>
-    <div class="row" id="div-kriteria">
-        
-    </div>
+    <?php Pjax::begin(['id'=>'pjax-penilaian']) ?>
+    <?php foreach ($jumlahKriteria as $index => $value): ?>
+        <div class="col-md-2">
+            <?php $idPeriodeKriteria = $value['id'] ?>
+            <label class="label-control"><?= $value['idKriteria']['kriteria'] ?></label>
+            <?= MaskedInput::widget([
+                'name' => 'nilai',
+                'mask' => ['9,9','99','99,9','99,99'],
+                'options'=>[
+                    'id'=>'form-masked-'.$index,
+                    'class'=> 'form-control',
+                ]
+            ]); ?>
+        </div>
+    <?php endforeach; ?>
+    <?php Pjax::end() ?>
     <br>
     <div class="form-group ">
         <?= Html::submitButton('Simpan' , ['class' => 'btn btn-success btn-block btn-flat']) ?>
@@ -111,15 +125,13 @@ function cariKriteria(vbulan, vtahun, vkaryawan){
             $("#tpenilaian-id_kriteria").html("<b>Silahkan Isi Form Tahun, Bulan dan Karyawan</b>");
             return false;
         } else {
-            $.ajax({
-                url: "'.Url::to(['cari-kriteria']).'",
+            $.pjax.reload({
+                url: "/penilaian/create",
                 type: "POST",
-                timeout: 100000,
                 data: {id_karyawan: vkaryawan, bulan: vbulan, tahun: vtahun},
-                success: function(data){
-                    $("#div-kriteria").html(data);
-                }
+                container: "#pjax-penilaian",
             });
+           
         }
 }
     ', \yii\web\View::POS_READY);

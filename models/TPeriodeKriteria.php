@@ -81,8 +81,8 @@ class TPeriodeKriteria extends \yii\db\ActiveRecord
         $startTahunBulan = $this->id_tahun_valid_start.$this->id_bulan_valid_start;
         $endTahunBulan   = $this->id_tahun_valid_end.$this->id_bulan_valid_end;
         if ($endTahunBulan < $startTahunBulan) {
-            $this->addError('id_bulan_valid_end','Valid End Harus Lebih Besar dari Valid Start');
-            $this->addError('id_tahun_valid_end','Valid End Harus Lebih Besar dari Valid Start');
+            $this->addError('id_bulan_valid_end','Bulan Akhir Periode Harus Lebih Besar/Sama dengan Bulan Awal periode');
+            $this->addError('id_tahun_valid_end','Tahun Akhir Periode Harus Lebih Besar/Sama dengan Tahun Awal periode');
             return false;
         }else{
             return true;
@@ -164,5 +164,12 @@ class TPeriodeKriteria extends \yii\db\ActiveRecord
             $this->addError('periode_kriteria','Periode Kriteria Sudah tersedia, Silahkan periksa kembali');
             return false;
         }
+    }
+
+    public static function cariPeriodeKriteria($start,$end){
+        return TPeriodeKriteria::find()
+            ->where('STR_TO_DATE(:bulanTahun, "%Y-%m") BETWEEN STR_TO_DATE(CONCAT(idTahunValidStart.tahun,"-",id_bulan_valid_start), "%Y-%m") AND STR_TO_DATE(CONCAT(idTahunValidEnd.tahun,"-",id_bulan_valid_end), "%Y-%m")',
+                [':bulanTahun'=>$inputTahunBulan
+        ])->all();
     }
 }

@@ -3,6 +3,7 @@ use yii\helpers\Html;
 //use yii\widgets\MaskedInput;
 //app\assets\AppAsset::register($this)
 ?>
+<?php if(!empty($jumlahKriteria)): ?>
 	<?php foreach ($jumlahKriteria as $index => $value): ?>
 		<div class="col-md-2">
 			<?php $idPeriodeKriteria = $value['id'] ?>
@@ -10,6 +11,11 @@ use yii\helpers\Html;
 			<?= Html::textInput("nilai[$idPeriodeKriteria]", $value = null, ['class' => 'form-control form-nilai']); ?>
 		</div>
 	<?php endforeach; ?>
+<?php else: ?>
+    <center>
+        <p style="font-size: 18px; font-weight: bold; "> Periode Kriteria Belum Tersedia</p>
+    </center>
+<?php endif; ?>
 <?php
 $this->registerJs("
 $('.form-nilai').keydown(function(event) {
