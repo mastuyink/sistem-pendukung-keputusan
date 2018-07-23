@@ -100,7 +100,6 @@
                     ['label' => 'Periode Kriteria', 'icon' => 'circle-o', 'url' => '/periode-kriteria/index',],
                     ['label' => 'Kriteria', 'icon' => 'circle-o', 'url' => '/kriteria/index',],
                     ['label' => 'Laporan Penilaian', 'icon' => 'circle-o', 'url' => '/laporan/bulanan',],
-                    ['label' => 'Kriteria', 'icon' => 'circle-o', 'url' => '/kriteria/index',],
                     
                 ],
             ]
