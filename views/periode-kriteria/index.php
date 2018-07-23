@@ -1,7 +1,7 @@
 <?php
 
 use yii\helpers\Html;
-use yii\grid\GridView;
+use kartik\grid\GridView;
 
 /* @var $this yii\web\View */
 /* @var $searchModel app\models\TPeriodeKriteriaSearch */
@@ -30,19 +30,31 @@ $this->params['breadcrumbs'][] = $this->title;
             ['class' => 'yii\grid\SerialColumn'],
 
             [
+                'header' => 'Periode',
+                'format' => 'raw',
+                'value'  =>function($model){
+                    return $model::ambilNamaBulan($model->id_bulan_valid_start)." ".$model->tahunValidStart->tahun." -> ".$model::ambilNamaBulan($model->id_bulan_valid_end)." ".$model->tahunValidEnd->tahun.Html::a('<i class="fa fa-plus-square"></i>', null, ['class' => 'btn btn-sm btn-success ']);
+                },
+
+                'group'      =>true,  // enable grouping,
+                'subGroupOf' =>1,
+                'groupedRow' =>true,
+                
+            ],
+            [
                 'header'=> 'Kriteria',
                 'attribute'=>'id_kriteria',
                 'format'=> 'raw',
                 'value' => 'idKriteria.kriteria'
             ],
             'bobot',
-             [
-                'header'=> 'Valid',
-                'format'=> 'raw',
-                'value' => function($model){
-                    return $model::ambilNamaBulan($model->id_bulan_valid_start)." ".$model->tahunValidStart->tahun." -> ".$model::ambilNamaBulan($model->id_bulan_valid_end)." ".$model->tahunValidEnd->tahun;
-                }
-            ],
+            //  [
+            //     'header'=> 'Valid',
+            //     'format'=> 'raw',
+            //     'value' => function($model){
+            //         return $model::ambilNamaBulan($model->id_bulan_valid_start)." ".$model->tahunValidStart->tahun." -> ".$model::ambilNamaBulan($model->id_bulan_valid_end)." ".$model->tahunValidEnd->tahun;
+            //     }
+            // ],
             // 'description:ntext',
             // 'create_at',
             // 'update_at',
