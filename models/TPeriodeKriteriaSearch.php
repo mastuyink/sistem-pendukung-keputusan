@@ -47,6 +47,11 @@ class TPeriodeKriteriaSearch extends TPeriodeKriteria
 
         $dataProvider = new ActiveDataProvider([
             'query' => $query,
+            'sort'=>[
+                'defaultOrder'=> [
+                    'id_kriteria' => SORT_ASC
+                ]
+            ]
         ]);
 
         $this->load($params);
