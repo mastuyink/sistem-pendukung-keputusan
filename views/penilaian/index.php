@@ -87,7 +87,7 @@ echo Dialog::widget([
                 'header'=> 'Tahun',
                 'format' =>'raw',
                 'value'=>function($model){
-                    return "<b>".$model->idTahun->tahun."</b>";
+                    return "<b style='font-size: 20px;'>".$model->idTahun->tahun."</b>";
                 },
                 'group'             =>true,  // enable grouping,
                 'groupedRow'        =>true,
@@ -96,7 +96,7 @@ echo Dialog::widget([
                 'header' => 'Bulan',
                 'format' => 'raw',
                 'value'  =>function($model){
-                    return "<span class='fa fa-calendar'></span> ".$model::ambilNamaBulan($model->id_bulan)."-".$model->idTahun->tahun;;
+                    return "<b style='font-size: 18px;'>".$model::ambilNamaBulan($model->id_bulan)."-".$model->idTahun->tahun."<b>";
                 },
 
                 'group'      =>true,  // enable grouping,
@@ -115,7 +115,7 @@ echo Dialog::widget([
                       ],
                 'filterInputOptions'=>['placeholder'=>'Semua...'],
                 'value'=> function($model){
-                    return $model->idKaryawan->nama;
+                    return "<b style='font-size: 17px; padding-left: 20px;'>".$model->idKaryawan->nama."<b>";
                 },
                 'group'      =>true,  // enable grouping,
                 'subGroupOf' =>2,
