@@ -224,17 +224,27 @@ class PenilaianController extends Controller
                 $listNilai = Yii::$app->request->post('nilai');
                 //return var_dump($listNilai);
                 foreach ($listNilai as $id_kriteria => $nilai) {
-                    if ($nilai != NULL && $nilai >= 0 && $nilai <= 100) {
-                        $newPenilaian                      = new TPenilaian();
-                        $newPenilaian->load(Yii::$app->request->post());
-                        $newPenilaian->id_periode_kriteria = $id_kriteria;
-                        $newPenilaian->nilai               = $nilai;
-                        $newPenilaian->save(false);
+                    if ($nilai != NULL) {
+                        if ($nilai >= 0 && $nilai <= 100) {
+                            $newPenilaian                      = new TPenilaian();
+                            $newPenilaian->load(Yii::$app->request->post());
+                            $newPenilaian->id_periode_kriteria = $id_kriteria;
+                            $newPenilaian->nilai               = $nilai;
+                            $newPenilaian->save(false);
+                        }else{
+                            $valid = false;
+                        }
+                        
                     }
                 }
+                if (!isset($valid)) {
                     $transaction->commit();
                     Yii::$app->session->setFlash('success', 'Tambah Data Penilaian Sukses');
                     return $this->redirect(['index']);
+                }else{
+                    Yii::$app->session->setFlash('danger', 'Jumlah Nilai tidak valid');
+                    $transaction->rollBack();
+                }
                 
             } catch(\Exception $e) {
                 $transaction->rollBack();

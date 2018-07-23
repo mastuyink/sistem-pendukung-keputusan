@@ -25,7 +25,7 @@ $this->params['breadcrumbs'][] = 'Update';
                     </tr>
                     <tr>
                         <td width="100">Kriteria</td>
-                        <td> : <?= $model->idKriteria->kriteria ?></td>
+                        <td> : <?= $model->idPeriodeKriteria->idKriteria->kriteria ?></td>
                     </tr>
                 </tbody>
             </table>
@@ -36,7 +36,7 @@ $this->params['breadcrumbs'][] = 'Update';
 
 	<div id="div-nilai">
         <?= $form->field($model, 'nilai')->widget(MaskedInput::className(), [
-        'mask'               => ['999','9.99','99.99'],
+        'mask'               => ['999','99','99.9','9','9.9'],
         'clientOptions'      => [
         'removeMaskOnSubmit' => false,
         ]

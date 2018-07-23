@@ -117,8 +117,6 @@ class KriteriaController extends Controller
         if ($model->load(Yii::$app->request->post()) && $model->validate()) {
             $model->save(false);
             Yii::$app->session->setFlash('success', 'Kriteria '.$model->kriteria.' Berhasil Diperbaharui');
-            $model->save(false);
-            $transaction->commit();
             return $this->redirect(['index']);
             
         } 

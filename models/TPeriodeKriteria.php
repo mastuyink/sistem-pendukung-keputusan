@@ -166,10 +166,10 @@ class TPeriodeKriteria extends \yii\db\ActiveRecord
         }
     }
 
-    public static function cariPeriodeKriteria($start,$end){
-        return TPeriodeKriteria::find()
-            ->where('STR_TO_DATE(:bulanTahun, "%Y-%m") BETWEEN STR_TO_DATE(CONCAT(idTahunValidStart.tahun,"-",id_bulan_valid_start), "%Y-%m") AND STR_TO_DATE(CONCAT(idTahunValidEnd.tahun,"-",id_bulan_valid_end), "%Y-%m")',
-                [':bulanTahun'=>$inputTahunBulan
-        ])->all();
-    }
+    // public static function cariPeriodeKriteria($start,$end){
+    //     return TPeriodeKriteria::find()
+    //         ->where('STR_TO_DATE(:bulanTahun, "%Y-%m") BETWEEN STR_TO_DATE(CONCAT(idTahunValidStart.tahun,"-",id_bulan_valid_start), "%Y-%m") AND STR_TO_DATE(CONCAT(idTahunValidEnd.tahun,"-",id_bulan_valid_end), "%Y-%m")',
+    //             [':bulanTahun'=>$inputTahunBulan
+    //     ])->all();
+    // }
 }

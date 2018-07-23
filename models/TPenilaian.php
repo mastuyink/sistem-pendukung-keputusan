@@ -44,11 +44,12 @@ class TPenilaian extends \yii\db\ActiveRecord
         return [
             [['id_karyawan', 'id_bulan', 'id_tahun'], 'required','message'=>'{attribute} tidak boleh kosong'],
             [['id_karyawan', 'id_periode_kriteria', 'id_bulan', 'id_tahun'], 'integer','message'=>'{attribute} hanya boleh angka'],
-            [['create_at', 'update_at','nilai_normalisasi'], 'safe'],
+            [['create_at', 'update_at','nilai_normalisasi','nilai'], 'safe'],
             [['id_karyawan'], 'exist', 'skipOnError' => true, 'targetClass' => TKaryawan::className(), 'targetAttribute' => ['id_karyawan' => 'id']],
             [['id_bulan'],'in','range'=>array_keys(ModelBulan::ambilSemuaBulan())],
             [['id_tahun'], 'exist', 'skipOnError' => true, 'targetClass' => TTahun::className(), 'targetAttribute' => ['id_tahun' => 'id']],
             [['id_periode_kriteria'], 'exist', 'skipOnError' => true, 'targetClass' => TKriteria::className(), 'targetAttribute' => ['id_periode_kriteria' => 'id']],
+            //[['nilai'],'integer','min'=>0,'max'=>100,'tooSmall'=>'Nilai Minimal 0','tooBig'=>'Maksimal Nilai 100'],
         
             //[['nilai'], 'nilaiValidator'],
         ];
