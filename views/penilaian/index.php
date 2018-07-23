@@ -104,34 +104,6 @@ echo Dialog::widget([
                 'groupedRow' =>true,
                 
             ],
-            // [
-            //     'header' => '',
-            //     'format'=> 'raw',
-            //     'attribute'  => 'id_bulan',
-            //     'filterType' => GridView::FILTER_SELECT2,
-            //     'filter'     => $listBulan, 
-            //     'filterWidgetOptions'=>[
-            //         'pluginOptions'=>['allowClear'=>true],
-            //           ],
-            //     'filterInputOptions'=>['placeholder'=>'Semua Bulan...'],
-            //     'value'=> function($model){
-            //         return "";
-            //     }
-            // ],
-            // [
-            //     'header' => '',
-            //     'format'=> 'raw',
-            //     'attribute'  => 'id_tahun',
-            //     'filterType' => GridView::FILTER_SELECT2,
-            //     'filter'     => $listTahun, 
-            //     'filterWidgetOptions'=>[
-            //         'pluginOptions'=>['allowClear'=>true],
-            //           ],
-            //     'filterInputOptions'=>['placeholder'=>'Semua Tahun...'],
-            //     'value'=> function($model){
-            //         return "";
-            //     }
-            // ],
             [
                 'header'     => 'Nama',
                 'format'     => 'raw',
@@ -144,7 +116,10 @@ echo Dialog::widget([
                 'filterInputOptions'=>['placeholder'=>'Semua...'],
                 'value'=> function($model){
                     return $model->idKaryawan->nama;
-                }
+                },
+                'group'      =>true,  // enable grouping,
+                'subGroupOf' =>2,
+                'groupedRow' =>true,
             ],
             [
                 'header'     => 'Kriteria',
