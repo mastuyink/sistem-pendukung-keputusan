@@ -304,14 +304,19 @@ class PenilaianController extends Controller
     {
         $model = $this->findModel($id);
         if ($model->load(Yii::$app->request->post()) && $model->validate()) {
-            $model->save(false);
-            Yii::$app->session->setFlash('success', 'Update Data Penilaian Sukses');
+            if ($model->nilai < 0 || $model->nilai > 100) {
+                $model->addError('nilai','Jumlah Nilai Invalid');
+            }else{
+                $model->save(false);
+                Yii::$app->session->setFlash('success', 'Update Data Penilaian Sukses');
             return $this->redirect(['index']);
-        } else {
+            }
+            
+            
+        } 
             return $this->render('update', [
                 'model'     => $model,
             ]);
-        }
     }
 
     /**
