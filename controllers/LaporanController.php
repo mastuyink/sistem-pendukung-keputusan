@@ -166,7 +166,7 @@ class LaporanController extends Controller
             $modelPenilaian = VHasilAkhir::find()
                 ->where(['id_karyawan'=>$modelKaryawan->id])
                 ->andWhere(['id_tahun'=>$tahun->id])
-             ->orderBy(['id_tahun'=>SORT_DESC,'id_bulan'=>SORT_ASC])->all();
+             ->orderBy(['id_tahun'=>SORT_DESC,'id_bulan'=>SORT_DESC])->all();
             if ($modelPenilaian != null) {
                 $postData = [
                     'nip' => $data['nip'],
