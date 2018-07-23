@@ -48,9 +48,11 @@ class PenilaianController extends Controller
                         'roles' => ['?'],
                     ],
                     [
-                       // 'actions' => ['detail-nilai'],
+                       //'actions' => ['index','drop-bulan',''],
                         'allow' => true,
-                        'roles' => ['@'],
+                        'matchCallback' => function ($rule, $action) {
+                            return Yii::$app->user->identity->level != 2;
+                        },
                     ],
                     // [
                     //    'actions' => ['index','drop-bulan',''],

@@ -12,6 +12,7 @@ use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
 use yii\helpers\ArrayHelper;
+use yii\filters\AccessControl;
 /**
  * PeriodeKriteriaController implements the CRUD actions for TPeriodeKriteria model.
  */
@@ -27,6 +28,33 @@ class PeriodeKriteriaController extends Controller
                 'class' => VerbFilter::className(),
                 'actions' => [
                     'delete' => ['POST'],
+                ],
+            ],
+            'access' => [
+                'class' => AccessControl::className(),
+                'rules' => [
+                    [
+                        'actions' => ['index'],
+                        'allow' => true,
+                        'roles' => ['@'],
+                    ],
+                    [
+                      //  'actions' => ['create','update','delete','drop-bulan'],
+                        'allow' => true,
+                        'matchCallback' => function ($rule, $action) {
+                            if (!Yii::$app->user->isGuest) {
+                                return Yii::$app->user->identity->level == 1 || Yii::$app->user->identity->level == 2;
+                            }
+                            
+                        },
+                    ],
+                    // [
+                    //    // 'actions' => ['index','drop-bulan',''],
+                    //     'allow' => true,
+                    //     'matchCallback' => function ($rule, $action) {
+                    //         return Yii::$app->user->identity->level == 1;
+                    //     },
+                    // ],
                 ],
             ],
         ];

@@ -11,10 +11,11 @@ $this->title = 'Periode Kriteria';
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 <div class="tperiode-kriteria-index">
-
+<?php if(Yii::$app->user->identity->level < 3): ?>
     <p>
         <?= Html::a('', ['create'], ['class' => 'btn btn-success btn-lg btn-flat fa fa-plus-square']) ?>
     </p>
+<?php endif; ?>
 <div class="row">
     <div class="col-md-12">
         <div class="box box-primary">
@@ -33,13 +34,17 @@ $this->params['breadcrumbs'][] = $this->title;
                 'header' => 'Periode',
                 'format' => 'raw',
                 'value'  =>function($model){
-                    return $model::ambilNamaBulan($model->id_bulan_valid_start)." ".$model->tahunValidStart->tahun." -> ".$model::ambilNamaBulan($model->id_bulan_valid_end)." ".$model->tahunValidEnd->tahun.' &nbsp &nbsp'.
-                    Html::a('<i class="fa fa-plus-square"></i>', ['/periode-kriteria/tambah-kriteria',
+                    if (Yii::$app->user->identity->level < 3) {
+                        $button = Html::a('<i class="fa fa-plus-square"></i>', ['/periode-kriteria/tambah-kriteria',
                         'TPeriodeKriteria[id_bulan_valid_start]'=>$model->id_bulan_valid_start,
                         'TPeriodeKriteria[id_tahun_valid_start]'=>$model->id_tahun_valid_start,
                         'TPeriodeKriteria[id_bulan_valid_end]'=>$model->id_bulan_valid_end,
                         'TPeriodeKriteria[id_tahun_valid_end]'=>$model->id_tahun_valid_end,
                     ], ['class' => 'btn btn-sm btn-success ']);
+                    }else{
+                        $button = NULL;
+                    }
+                    return $model::ambilNamaBulan($model->id_bulan_valid_start)." ".$model->tahunValidStart->tahun." -> ".$model::ambilNamaBulan($model->id_bulan_valid_end)." ".$model->tahunValidEnd->tahun.' &nbsp &nbsp'.$button;
                 },
 
                 'group'      =>true,  // enable grouping,

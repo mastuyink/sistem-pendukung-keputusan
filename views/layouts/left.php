@@ -97,7 +97,8 @@
                 'options' => ['class' => 'sidebar-menu tree', 'data-widget'=> 'tree'],
                 'items' => [
                     ['label' => 'Menu Kepala Dinas', 'options' => ['class' => 'header']],
-                    
+                    ['label' => 'Periode Kriteria', 'icon' => 'circle-o', 'url' => '/periode-kriteria/index',],
+                    ['label' => 'Kriteria', 'icon' => 'circle-o', 'url' => '/kriteria/index',],
                     ['label' => 'Laporan Penilaian', 'icon' => 'circle-o', 'url' => '/laporan/bulanan',],
                     ['label' => 'Kriteria', 'icon' => 'circle-o', 'url' => '/kriteria/index',],
                     
@@ -132,6 +133,7 @@
                         'items' => [
                             ['label' => 'Penilaian', 'icon' => 'circle-o', 'url' => '/penilaian/index',],
                             ['label' => 'Hasil Akhir', 'icon' => 'circle-o', 'url' => '/penilaian/hasil-akhir',],
+                            ['label' => 'Periode Kriteria', 'icon' => 'circle-o', 'url' => '/periode-kriteria/index',],
                             ['label' => 'Kriteria', 'icon' => 'circle-o', 'url' => '/kriteria/index',],
                             
                         ],
