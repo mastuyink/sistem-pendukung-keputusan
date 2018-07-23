@@ -32,6 +32,52 @@ class PeriodeKriteriaController extends Controller
         ];
     }
 
+    public function actionTambahKriteria(){
+        $periodeBaru = new TPeriodeKriteria();
+        $periodeBaru->load(Yii::$app->request->get());
+        $periodeTerinput = TPeriodeKriteria::find()->where(['AND',
+            ['id_bulan_valid_start'=>$periodeBaru->id_bulan_valid_start],
+            ['id_tahun_valid_start'=>$periodeBaru->id_tahun_valid_start],
+            ['id_bulan_valid_end'=>$periodeBaru->id_bulan_valid_end],
+            ['id_tahun_valid_end'=>$periodeBaru->id_tahun_valid_end],
+        ])->all();
+        if (!empty($periodeTerinput)) {
+            $condition = ['AND'];
+           foreach ($periodeTerinput as $key => $value) {
+               $condition[]=['!=','id',$value->id_kriteria];
+               $jumlahBobotDiinput[] = $value->bobot;
+           }
+        
+           if ($periodeBaru->load(Yii::$app->request->post())) {
+            $total = array_sum($jumlahBobotDiinput)+$periodeBaru->bobot;
+            if ($total <= 100) {
+                $periodeBaru->save(false);
+                Yii::$app->session->setFlash('success', 'Penambahan Periode Sukses');
+                return $this->redirect(['index']);
+            }else{
+                $periodeBaru->addError('bobot','Total Keseluruhan Bobot tidak boleh melebihi 100, terdeteksi '.$total);
+            }
+           }
+
+
+           if (count($condition) > 1) {
+               $kriterias = TKriteria::find()->where($condition)->all();
+           }else{
+                $kriterias = TKriteria::find()->all();
+           }
+           $listKriteria = ArrayHelper::map($kriterias, 'id', 'kriteria');
+           return $this->render('_tambah-periode',[
+            'periodeBaru' => $periodeBaru,
+            'periodeTerinput' => $periodeTerinput,
+            'listKriteria' => $listKriteria,
+           ]);
+        }else{
+            Yii::$app->session->setFlash('danger', 'Periode Invalid');
+            return $this->redirect(['index']);
+        }
+       
+    }
+
     /**
      * Lists all TPeriodeKriteria models.
      * @return mixed

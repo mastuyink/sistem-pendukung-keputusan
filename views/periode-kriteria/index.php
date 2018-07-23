@@ -33,7 +33,13 @@ $this->params['breadcrumbs'][] = $this->title;
                 'header' => 'Periode',
                 'format' => 'raw',
                 'value'  =>function($model){
-                    return $model::ambilNamaBulan($model->id_bulan_valid_start)." ".$model->tahunValidStart->tahun." -> ".$model::ambilNamaBulan($model->id_bulan_valid_end)." ".$model->tahunValidEnd->tahun.Html::a('<i class="fa fa-plus-square"></i>', null, ['class' => 'btn btn-sm btn-success ']);
+                    return $model::ambilNamaBulan($model->id_bulan_valid_start)." ".$model->tahunValidStart->tahun." -> ".$model::ambilNamaBulan($model->id_bulan_valid_end)." ".$model->tahunValidEnd->tahun.' &nbsp &nbsp'.
+                    Html::a('<i class="fa fa-plus-square"></i>', ['/periode-kriteria/tambah-kriteria',
+                        'TPeriodeKriteria[id_bulan_valid_start]'=>$model->id_bulan_valid_start,
+                        'TPeriodeKriteria[id_tahun_valid_start]'=>$model->id_tahun_valid_start,
+                        'TPeriodeKriteria[id_bulan_valid_end]'=>$model->id_bulan_valid_end,
+                        'TPeriodeKriteria[id_tahun_valid_end]'=>$model->id_tahun_valid_end,
+                    ], ['class' => 'btn btn-sm btn-success ']);
                 },
 
                 'group'      =>true,  // enable grouping,
