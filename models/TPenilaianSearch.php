@@ -12,13 +12,14 @@ use app\models\TPenilaian;
  */
 class TPenilaianSearch extends TPenilaian
 {
+    public $id_kriteria;
     /**
      * @inheritdoc
      */
     public function rules()
     {
         return [
-            [['id', 'id_karyawan', 'id_periode_kriteria', 'id_bulan', 'id_tahun'], 'integer'],
+            [['id', 'id_karyawan', 'id_periode_kriteria', 'id_bulan', 'id_tahun','id_kriteria'], 'integer'],
             [['nilai'], 'number'],
             [['create_at', 'update_at'], 'safe'],
         ];
@@ -42,7 +43,7 @@ class TPenilaianSearch extends TPenilaian
      */
     public function search($params)
     {
-        $query = TPenilaian::find();
+        $query = TPenilaian::find()->joinWith(['idPeriodeKriteria']);
 
         // add conditions that should always apply here
 
@@ -51,7 +52,7 @@ class TPenilaianSearch extends TPenilaian
             'sort'=>[
                 'defaultOrder'=> [
                     'id_tahun'    => SORT_DESC,
-                    'id_bulan'    => SORT_ASC,
+                    'id_bulan'    => SORT_DESC,
                     'id_karyawan' => SORT_ASC,
                     'id_periode_kriteria' => SORT_ASC
                 ]
@@ -70,7 +71,7 @@ class TPenilaianSearch extends TPenilaian
         $query->andFilterWhere([
             'id' => $this->id,
             'id_karyawan' => $this->id_karyawan,
-            'id_periode_kriteria' => $this->id_periode_kriteria,
+            't_periode_kriteria.id_kriteria' => $this->id_kriteria,
             'id_bulan' => $this->id_bulan,
             'id_tahun' => $this->id_tahun,
             'nilai' => $this->nilai,

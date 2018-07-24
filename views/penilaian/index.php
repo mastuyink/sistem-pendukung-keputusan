@@ -107,6 +107,22 @@ echo Dialog::widget([
             [
                 'header'     => 'Nama',
                 'format'     => 'raw',
+                // 'attribute'  => 'id_karyawan',
+                // 'filterType' => GridView::FILTER_SELECT2,
+                // 'filter'     => $listKaryawan, 
+                // 'filterWidgetOptions'=>[
+                //     'pluginOptions'=>['allowClear'=>true],
+                //       ],
+                // 'filterInputOptions'=>['placeholder'=>'Semua...'],
+                'value'=> function($model){
+                    return "<span style='font-size: 17px; padding-left: 20px;'>".$model->idKaryawan->nama."</span>";
+                },
+                'group'      =>true,  // enable grouping,
+                'subGroupOf' =>2,
+                'groupedRow' =>true,
+            ],
+            [
+                'header' => '  ',
                 'attribute'  => 'id_karyawan',
                 'filterType' => GridView::FILTER_SELECT2,
                 'filter'     => $listKaryawan, 
@@ -114,12 +130,10 @@ echo Dialog::widget([
                     'pluginOptions'=>['allowClear'=>true],
                       ],
                 'filterInputOptions'=>['placeholder'=>'Semua...'],
-                'value'=> function($model){
-                    return "<span style='font-size: 17px; padding-left: 20px;'>".$model->idKaryawan->nama."</span>";
+                //'headerOptions'=> ['colspan'=>2],
+                'value' => function($model){
+                    return '';
                 },
-                'group'      =>true,  // enable grouping,
-                'subGroupOf' =>2,
-                'groupedRow' =>true,
             ],
             [
                 'header'     => 'Kriteria',
