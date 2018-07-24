@@ -16,10 +16,18 @@ $model->id_tahun = date('Y')
 ?>
 
 <div class="tpenilaian-form">
-
+<div class="row">
+        <div class="col-md-12">
+            <div class="box box-primary">
+                <div class="box-header with-border">
+                  <!-- /.box-tools -->
+                </div>
+                <!-- /.box-header -->
+                <div class="box-body">
+                  <div class="row">
     <?php $form = ActiveForm::begin(['enableClientValidation'=>true]); ?>
     <div class="col-md-12">
-        <div class="col-md-2">
+        <div class="col-md-3">
             <?= $form->field($model, 'id_bulan')->dropDownList($listBulan, [
                 'prompt' => 'Pilih Bulan...',
                 'id' => 'form-bulan',
@@ -34,17 +42,22 @@ $model->id_tahun = date('Y')
                 ]); ?>
         </div>
     </div>
-    <?= $form->field($model, 'id_karyawan')->widget(Select2::classname(), [
-    'data' => [],
-    'options' => [
-        'id' => 'form-karyawan',
-        'placeholder' => 'Pilih Karyawan...',
+    <div class="col-md-12">
+        <div class="col-md-5"> 
+            <?= $form->field($model, 'id_karyawan')->widget(Select2::classname(), [
+                'data' => [],
+                'options' => [
+                    'id' => 'form-karyawan',
+                    'placeholder' => 'Pilih Karyawan...',
 
-    ],
-    'pluginOptions' => [
-        'allowClear' => false
-    ],
-    ]); ?>
+                ],
+                'pluginOptions' => [
+                    'allowClear' => false
+                ],
+            ]); ?>
+        </div>
+    </div>
+    <div class="col-md-12">
     <?php Pjax::begin(['id'=>'pjax-penilaian']) ?>
     <?php foreach ($jumlahKriteria as $index => $value): ?>
         <div class="col-md-2">
@@ -61,12 +74,16 @@ $model->id_tahun = date('Y')
         </div>
     <?php endforeach; ?>
     <?php Pjax::end() ?>
-    <br>
-    <div class="form-group ">
+    </div>
+    <div class="col-md-12" style="margin-top: 25px;">
         <?= Html::submitButton('Simpan' , ['class' => 'btn btn-success btn-block btn-flat']) ?>
     </div>
     <?php ActiveForm::end(); ?>
-
+</div>
+</div>
+</div>
+</div>
+</div>
 </div>
 <?php 
 $this->registerJs('
