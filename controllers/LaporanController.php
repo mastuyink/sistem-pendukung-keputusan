@@ -34,12 +34,17 @@ class LaporanController extends Controller
                 'class' => AccessControl::className(),
                 'rules' => [
                     [
-                        'actions' => ['karyawan','detail-nilai-karyawan','download-laporan-karyawan'],
+                        'actions' => ['export-laporan-bulanan','detail-bulanan','bulanan'],
                         'allow' => true,
-                        'roles' => ['?'],
+                        'matchCallback' => function ($rule, $action) {
+                            if (!Yii::$app->user->isGuest) {
+                                return Yii::$app->user->identity->level < 4;
+                            }
+                            
+                        },
                     ],
-                     [
-                       // 'actions' => ['karyawan','detail-nilai-karyawan'],
+                    [
+                     'actions' => ['karyawan','detail-nilai-karyawan','download-laporan-karyawan'],
                         'allow' => true,
                         'roles' => ['@'],
                     ],
@@ -191,7 +196,12 @@ class LaporanController extends Controller
     }
 
     public function actionKaryawan(){
-        $listKaryawan = TKaryawan::find()->orderBy(['nama'=>SORT_ASC])->all();
+        if (Yii::$app->user->identity->level == 4) {
+           $listKaryawan = TKaryawan::find()->where(['id'=>Yii::$app->user->identity->karyawan->id])->orderBy(['nama'=>SORT_ASC])->all();
+        }else{
+            $listKaryawan = TKaryawan::find()->orderBy(['nama'=>SORT_ASC])->all();
+        }
+        
         return$this->render('form-karyawan',[
             'listKaryawan' => $listKaryawan
         ]);

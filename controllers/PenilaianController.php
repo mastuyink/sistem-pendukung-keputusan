@@ -45,7 +45,7 @@ class PenilaianController extends Controller
                     [
                         'actions' => ['detail-nilai'],
                         'allow' => true,
-                        'roles' => ['?'],
+                        'roles' => ['@'],
                     ],
                     [
                        //'actions' => ['index','drop-bulan',''],

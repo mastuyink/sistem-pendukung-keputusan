@@ -14,6 +14,7 @@ use app\models\TProvinsi;
 use app\models\TKabupaten;
 use app\models\TKecamatan;
 use app\models\TKelurahan;
+use app\models\User;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
@@ -35,11 +36,21 @@ class KaryawanController extends Controller
                 'class' => VerbFilter::className(),
                 'actions' => [
                     'delete' => ['POST'],
+                    'hapus-user' => ['POST'],
                 ],
             ],
             'access' => [
                 'class' => AccessControl::className(),
                 'rules' => [
+                    [
+                        'actions' => ['pilih-user','hapus-user'],
+                        'allow' => true,
+                        'matchCallback' => function ($rule, $action) {
+                            if (!Yii::$app->user->isGuest) {
+                                return Yii::$app->user->identity->level == 1;
+                            }
+                        },
+                    ],
                     [
                        // 'actions' => ['create','update','delete'],
                         'allow' => true,
@@ -55,6 +66,44 @@ class KaryawanController extends Controller
                 ],
             ],
         ];
+    }
+
+    public function actionHapusUser($id_karyawan){
+        if(($karyawan = TKaryawan::find()->where(['AND',['id'=>$id_karyawan],['IS NOT','id_user',NULL]])->one()) !== NULL){
+            $karyawan->id_user = NULL;
+            $karyawan->save(false);
+            Yii::$app->session->setFlash('success', 'Hapus User Sukses');
+            
+        }else{
+            Yii::$app->session->setFlash('danger', 'Hapus User Gagal');
+        }
+
+        return $this->redirect(['index']);
+    }
+    public function actionPilihUser($id_karyawan){
+        $modelKaryawan = $this->findModel($id_karyawan);
+        if ($modelKaryawan->load(Yii::$app->request->post())) {
+            if ($modelKaryawan->id_user != NULL) {
+                $modelKaryawan->save(false);
+                Yii::$app->session->setFlash('success', 'Pilih User Sukses');
+                
+            }else{
+                Yii::$app->session->setFlash('danger', 'Pilih User Yang diinginkan');
+            }
+            return $this->redirect(['index']);
+            
+        }
+            $karyawanBeruser = TKaryawan::find()->select('id_user')->where(['IS NOT','id_user',NULL])->all();
+            $condition = ['AND'];
+            foreach ($karyawanBeruser as $key => $value) {
+                $condition[] = ['!=','id',$value->id_user];
+            }
+            $condition[] = ['status'=> User::STATUS_ACTIVE];
+            $listUser = ArrayHelper::map(User::find()->where($condition)->all(), 'id', 'username');
+            return $this->renderAjax('pilih-user',[
+                'modelKaryawan' => $modelKaryawan,
+                'listUser'=>$listUser,
+            ]);
     }
 
     public function actionPilihJabatan($id_karyawan){

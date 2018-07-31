@@ -33,7 +33,6 @@
                 'options' => ['class' => 'sidebar-menu tree', 'data-widget'=> 'tree'],
                 'items' => [
                     ['label' => 'Menu', 'options' => ['class' => 'header']],
-                    ['label' => 'Cek Nilai', 'icon' => 'circle-o', 'url' => '/laporan/karyawan',],
                     ['label' => 'Login','icon' => 'sign-in', 'url' => ['user/login']],
                     
                 ],
@@ -89,6 +88,7 @@
                 ],
             ]
         ) ?>
+   
     <?php elseif(Yii::$app->user->identity->level == 2): ?>
         
         <!-- MENU KEPALA DINAS -->
@@ -147,6 +147,19 @@
                             
                         ],
                     ],
+                    
+                ],
+            ]
+        ) ?>
+        <?php elseif(Yii::$app->user->identity->level == 4): ?>
+        
+        <!-- MENU KARYAWAN -->
+        <?= dmstr\widgets\Menu::widget(
+            [
+                'options' => ['class' => 'sidebar-menu tree', 'data-widget'=> 'tree'],
+                'items' => [
+                    ['label' => 'Menu Karyawan', 'options' => ['class' => 'header']],
+                    ['label' => 'Cek Nilai', 'icon' => 'circle-o', 'url' => '/laporan/karyawan',],
                     
                 ],
             ]

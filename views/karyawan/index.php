@@ -138,6 +138,7 @@ $this->params['breadcrumbs'][] = $this->title;
             [
                 'header' => 'Action',
                 'format' => 'raw',
+                'width' => '175px;',
                 'value' => function($model){
                     $edit = Html::a('', ['update','id'=>$model->id], [
                         'class' => 'btn btn-xs btn-flat btn-primary fa fa-pencil',
@@ -162,9 +163,32 @@ $this->params['breadcrumbs'][] = $this->title;
                         'id'          => 'btn-detail-karyawan'.$model->id,
                         'id-karyawan' => $model->id
                     ]);
+                    if ($model->id_user == NULL) {
+                        $btnUser = Html::button('', [
+                            'class'       => 'btn btn-xs btn-flat btn-info fa fa-user-plus btn-pilih-user',
+                            'data-toggle' => 'tooltip',
+                            'title'       => 'Pilih User',
+                            'id'          => 'btn-detail-karyawan'.$model->id,
+                            'id-karyawan' => $model->id
+                        ]);
+                    }else{
+                        $btnUser = Html::a('', ['hapus-user','id_karyawan'=>$model->id], [
+                            'class'       => 'btn btn-xs btn-flat btn-danger fa fa-user-times btn-hapus-user',
+                            'data-toggle' => 'tooltip',
+                            'title'       => 'Hapus User',
+                            'id' => 'btn-delete-'.$model->id,
+                            'data'        => [
+                                    'confirm' => 'Anda Yakin Ingin Menghapus User Karyawan <b>'.$model->nama.' </b> ?',
+                                    'method'  => 'post',
+                            ],
+                        ]);
+                    }
+
+                    
+                    
 
                     if (Yii::$app->user->identity->level == 1) {
-                        return $detail."".$edit."".$delete;
+                        return $detail."".$btnUser."".$edit."".$delete;
                     }else{
                         return $detail;
                     }
@@ -179,7 +203,8 @@ $this->params['breadcrumbs'][] = $this->title;
 
 $this->registerJs('
 $(".btn-detail-karyawan").on("click",function(){
-    $("#modal-detail-karyawan").modal();
+    $("#modal").modal();
+    $("#modal").find(".modal-title").html("Detail Karyawan");
     $.ajax({
         url: "'.Url::to(['detail-karyawan']).'",
         type: "POST",
@@ -191,18 +216,32 @@ $(".btn-detail-karyawan").on("click",function(){
         }
     })
 });
+$(".btn-pilih-user").on("click",function(){
+    $("#modal").modal();
+    $("#modal").find(".modal-title").html("Pilih User");
+    $.ajax({
+        url: "'.Url::to(['pilih-user']).'?id_karyawan="+$(this).attr("id-karyawan"),
+        type: "GET",
+        success: function(data){
+            $(".modal-body").html(data);
+        },
+        error: function(data){
+            $(".modal-body").html("<center><b>ERROR</b></center>"+data);
+        }
+    })
+});
 
     ', \yii\web\View::POS_READY);
  ?>
 
 <!--  MODAL START -->
-<div class="modal fade" id="modal-detail-karyawan">
+<div class="modal fade" id="modal">
     <div class="modal-dialog modal-lg">
         <div class="modal-content">
               <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                   <span aria-hidden="true">×</span></button>
-                <h4 class="modal-title">Detail Karyawan</h4>
+                <h4 class="modal-title"></h4>
               </div>
               <div class="modal-body">
                 <center>Mohon Tunggu ...<br><i class="fa fa-spinner fa-spin"></i></center>

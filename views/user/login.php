@@ -21,10 +21,12 @@ $fieldOptions2 = [
 
 <div class="login-box">
     <div class="login-logo">
+         <center><img src="/img/logo.png" alt="User Image"/></center>
         <a href="#"><b>DISPERINDAG</b> BWI</a>
     </div>
     <!-- /.login-logo -->
     <div class="login-box-body">
+
         <p class="login-box-msg">Silahkan Masuk Dengan Username dan Password Anda</p>
 
         <?php $form = ActiveForm::begin(['id' => 'login-form', 'enableClientValidation' => false]); ?>

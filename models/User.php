@@ -57,6 +57,11 @@ class User extends ActiveRecord implements IdentityInterface
         ];
     }
 
+    public function getKaryawan()
+    {
+        return $this->hasOne(TKaryawan::className(), ['id_user' => 'id']);
+    }
+
     public static function ambilLevelUser($level)
     {
         //$level = Yii::$app->user->identity->level;
@@ -71,6 +76,8 @@ class User extends ActiveRecord implements IdentityInterface
         }
 
     }
+
+
 
 
     /**

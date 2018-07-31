@@ -36,7 +36,12 @@ class PeriodeKriteriaController extends Controller
                     [
                         'actions' => ['index'],
                         'allow' => true,
-                        'roles' => ['@'],
+                        'matchCallback' => function ($rule, $action) {
+                            if (!Yii::$app->user->isGuest) {
+                                return Yii::$app->user->identity->level < 4;
+                            }
+                            
+                        },
                     ],
                     [
                       //  'actions' => ['create','update','delete','drop-bulan'],
