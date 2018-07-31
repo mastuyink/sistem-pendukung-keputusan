@@ -159,7 +159,12 @@ class LaporanController extends Controller
 
     public function actionDetailNilaiKaryawan(){
         $data = Yii::$app->request->post();
-        $modelKaryawan = TKaryawan::find()->where(['nip'=>$data['nip']])->andWhere(['nama'=>$data['nama']])->one();
+        if (Yii::$app->user->identity->level == 4) {
+            $modelKaryawan = TKaryawan::find()->where(['nip'=>$data['nip']])->andWhere(['nama'=>$data['nama']])->andWhere(['id'=>Yii::$app->user->identity->karyawan->id])->one();
+        }else{
+            $modelKaryawan = TKaryawan::find()->where(['nip'=>$data['nip']])->andWhere(['nama'=>$data['nama']])->one();
+        }
+        
         if ($modelKaryawan == null) {
             return '<div class="callout callout-danger">
                       <h4>Data Nilai Tidak Ditemukan...</h4>
