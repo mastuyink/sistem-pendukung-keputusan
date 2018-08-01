@@ -7,6 +7,7 @@ use yii\helpers\ArrayHelper;
 $this->title = "Laporan Penilaian Karyawan";
 ?>
 
+<?php if(!empty($listKaryawan)): ?>
 <div class="laporan-bulanan-search">
 <div class="row">
     <div class="col-md-12">
@@ -74,4 +75,15 @@ $this->title = "Laporan Penilaian Karyawan";
 	</div>
 </div>
 </div>
+<?php else: ?>
+<div class="row">
+    <div class="col-md-12">
+        <div class="box box-primary">
+            <div class="box-header with-border">
+            	<center><p>Anda Belum memiliki akses Untuk Melihat Nilai, Silahkan Hubungi Admin Untuk Mendapatkan Akses<br>Terimaksih</p></center>
+            </div>
+        </div>
+    </div>
+</div>
+<?php endif; ?>
 

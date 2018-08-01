@@ -202,7 +202,12 @@ class LaporanController extends Controller
 
     public function actionKaryawan(){
         if (Yii::$app->user->identity->level == 4) {
-           $listKaryawan = TKaryawan::find()->where(['id'=>Yii::$app->user->identity->karyawan->id])->orderBy(['nama'=>SORT_ASC])->all();
+            if (isset(Yii::$app->user->identity->karyawan->id)) {
+                $listKaryawan = TKaryawan::find()->where(['id'=>Yii::$app->user->identity->karyawan->id])->orderBy(['nama'=>SORT_ASC])->all();
+            }else{
+                $listKaryawan = NULL;
+            }
+           
         }else{
             $listKaryawan = TKaryawan::find()->orderBy(['nama'=>SORT_ASC])->all();
         }

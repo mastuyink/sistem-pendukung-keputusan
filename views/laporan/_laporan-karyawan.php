@@ -1,8 +1,7 @@
 <?php 
 use yii\helpers\Html;
  ?>
-<center><h3>Laporan Karyawan Sisten Pendukung Keputusan Dinas Perindustrian dan Perdagangan</h3></center>
-<h3>Bulan <?= $modelHasilAkhir[0]::ambilNamaBulan($modelHasilAkhir[0]['id_bulan']) ?> Tahun <?= $modelHasilAkhir[0]['idTahun']['tahun'] ?></h3>
+<center><h3>Laporan Karyawan Sisten Pendukung Keputusan Dinas Perindustrian dan Perdagangan</h3></center></h3>
 
 	<table class="table table-striped">
             <thead>
@@ -10,6 +9,7 @@ use yii\helpers\Html;
                     <th>No</th>
                     <th>NIP</th>
                     <th>Nama</th>
+                    <th>Bulan</th>
                     <th>Total Nilai</th>
                     <th>Ranking</th>
 
@@ -28,6 +28,7 @@ use yii\helpers\Html;
                         <td width="25"><?= $key+1 ?></td>
                         <td><?= $valueHasilAkhir->idKaryawan->nip ?></td>
                         <td><?= $valueHasilAkhir->idKaryawan->nama ?></td>
+                        <td><?= $valueHasilAkhir::ambilNamaBulan($valueHasilAkhir['id_bulan']) ?> - <?= $valueHasilAkhir['idTahun']['tahun'] ?></td>
                         <td><?= $valueHasilAkhir->total ?></td>
                         <td><?= $valueHasilAkhir::ambilRanking($data) ?></td>
                     </tr>
