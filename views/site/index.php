@@ -43,7 +43,8 @@ $this->title = "SPK DISPERINDAG"
           <!-- /.box -->
 </div>
 </div>
-<div class="row col-md-12">
+<div class="row">
+  <div class="col-md-12">
   <div class="box box-info collapsed-box">
     <div class="box-header with-border">  
       <button type="button" class="btn btn-box-tool btn-block" data-widget="collapse">
@@ -75,6 +76,7 @@ $this->title = "SPK DISPERINDAG"
         </div>
     </div>
   </div>
+</div>
 </div>
 
 
