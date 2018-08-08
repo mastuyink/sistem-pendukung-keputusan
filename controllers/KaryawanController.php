@@ -43,15 +43,6 @@ class KaryawanController extends Controller
                 'class' => AccessControl::className(),
                 'rules' => [
                     [
-                        'actions' => ['pilih-user','hapus-user'],
-                        'allow' => true,
-                        'matchCallback' => function ($rule, $action) {
-                            if (!Yii::$app->user->isGuest) {
-                                return Yii::$app->user->identity->level == 1;
-                            }
-                        },
-                    ],
-                    [
                        // 'actions' => ['create','update','delete'],
                         'allow' => true,
                         'matchCallback' => function ($rule, $action) {

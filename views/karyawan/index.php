@@ -187,11 +187,11 @@ $this->params['breadcrumbs'][] = $this->title;
                     
                     
 
-                    if (Yii::$app->user->identity->level == 1) {
+                    //if (Yii::$app->user->identity->level == 1) {
                         return $detail."".$btnUser."".$edit."".$delete;
-                    }else{
-                        return $detail;
-                    }
+                    // }else{
+                    //     return $detail;
+                    // }
                     
                 }
             ]
