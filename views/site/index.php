@@ -22,7 +22,7 @@ $this->title = "SPK DISPERINDAG"
           <div class="carousel-inner">
             <?php foreach ($listGambar as $key => $value): ?>
               <div style="min-height: 300px; max-height: 300px;" class="item <?= $key == 0 ? 'active' : '' ?>">
-                <?= Html::img('/carrousel/'.$value->nama_gambar, ['alt' => $value->nama_gambar]); ?>
+                <?= Html::img('/carrousel/'.$value->nama_gambar, ['alt' => $value->nama_gambar,'style'=>'width:100%; height: auto;']); ?>
                 <div class="carousel-caption">
                   <?= $value->caption ?>
                 </div>
